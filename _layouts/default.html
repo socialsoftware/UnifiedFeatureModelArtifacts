@@ -3,11 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<!-- FIXME: add Tecnico logo as tab icon -->
+<!-- The Técnico shield, lifted from the official identity kit. The tab icons are
+     cropped flush to the shield: browsers already inset the favicon in their own
+     padding box, so any margin baked in here just makes the mark look small. The
+     apple-touch-icon keeps a margin -- iOS crops it to a rounded square. -->
+<link rel="icon" href="{{ '/assets/images/favicon.svg' | relative_url }}" type="image/svg+xml">
+<link rel="icon" href="{{ '/assets/images/favicon.ico' | relative_url }}" sizes="32x32">
+<link rel="apple-touch-icon" href="{{ '/assets/images/apple-touch-icon.png' | relative_url }}">
 <title>{% if page.title and page.title != "Home" %}{{ page.title }} · {% endif %}{{ site.title }}</title>
 <meta name="description" content="{{ page.description | default: site.description }}">
 <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
-<!-- FIXME: for some reason, when switching tabs, the css is not properly loading -->
 </head>
 <body>
 
@@ -35,13 +40,10 @@
       {%- for p in nav -%}
         {%- assign here = false -%}
         {%- if page.url == p.url -%}{%- assign here = true -%}{%- endif -%}
-        {%- comment -%} Keep "Tools" highlighted on each per-tool page. {%- endcomment -%}
-        {%- if p.url == '/tools/' and page.url contains '/tools/' -%}{%- assign here = true -%}{%- endif -%}
         <li><a href="{{ p.url | relative_url }}"{% if here %} aria-current="page"{% endif %}>{{ p.nav_title | default: p.title }}</a></li>
       {%- endfor -%}
     </ul>
   </div>
-  <!-- FIXME: add search bar -->
 </nav>
 
 <main id="content" class="wrap">

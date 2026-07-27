@@ -17,6 +17,10 @@ bundle install                 # install the pinned Jekyll (vendor/bundle, see .
 bundle exec jekyll serve        # local preview at http://localhost:4000/UnifiedFeatureModelArtifacts/
 ```
 
+Browse the preview at that full URL, baseurl included. The bare root
+(`http://localhost:4000/`) 404s, and because asset URLs are absolute the result
+looks like a page whose stylesheet silently failed to load.
+
 `generate.py` prints a per-tool colour-count table that must match the paper's
 mapping-summary table, and exits non-zero (`BuildError`) if any expected
 analysis, profile, or image is missing. It has no flags and no partial mode —
