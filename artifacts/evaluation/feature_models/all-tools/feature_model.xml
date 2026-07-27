@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<featureModel>
+	<properties>
+		<graphics key="autolayoutconstraints" value="false"/>
+		<graphics key="legendautolayout" value="true"/>
+		<graphics key="showconstraints" value="true"/>
+		<graphics key="showshortnames" value="false"/>
+		<graphics key="layout" value="horizontal"/>
+		<graphics key="showcollapsedconstraints" value="true"/>
+		<graphics key="legendhidden" value="false"/>
+		<graphics key="layoutalgorithm" value="1"/>
+	</properties>
+	<struct>
+		<and mandatory="true" name="Microservices Decomposition and Refactoring">
+			<graphics key="collapsed" value="false"/>
+			<or mandatory="true" name="Granularity">
+				<graphics key="collapsed" value="false"/>
+				<feature name="Method"/>
+				<feature name="Class"/>
+				<feature name="Entity"/>
+				<feature name="Functionality"/>
+				<feature name="Package"/>
+				<feature name="API endpoint"/>
+			</or>
+			<or mandatory="true" name="Representation Collection">
+				<graphics key="collapsed" value="false"/>
+				<and name="Collector">
+					<graphics key="collapsed" value="false"/>
+					<or mandatory="true" name="Source">
+						<graphics key="collapsed" value="false"/>
+						<or name="Development">
+							<graphics key="collapsed" value="false"/>
+							<feature name="Source code"/>
+							<feature name="Database schema"/>
+							<feature name="Version history"/>
+						</or>
+						<or name="Runtime">
+							<graphics key="collapsed" value="false"/>
+							<feature name="Runtime log traces"/>
+							<feature name="User interactions"/>
+						</or>
+						<or name="Higher-Level Models">
+							<graphics key="collapsed" value="false"/>
+							<feature name="Business process model"/>
+							<feature name="Use case"/>
+							<feature name="Data flow diagram"/>
+						</or>
+						<or name="Documentation">
+							<graphics key="collapsed" value="false"/>
+							<feature name="Directly in the code"/>
+							<feature name="Paper document"/>
+							<feature name="Digital format"/>
+						</or>
+					</or>
+					<or mandatory="true" name="Collection Technique">
+						<graphics key="collapsed" value="false"/>
+						<feature name="Static analysis"/>
+						<feature name="Dynamic analysis"/>
+						<feature name="Version analysis"/>
+						<feature name="Model analysis"/>
+					</or>
+				</and>
+				<feature name="External"/>
+			</or>
+			<and mandatory="true" name="Representation">
+				<graphics key="collapsed" value="false"/>
+				<or mandatory="true" name="Analytical">
+					<graphics key="collapsed" value="false"/>
+					<or name="Structure">
+						<graphics key="collapsed" value="false"/>
+						<feature name="Inner structure"/>
+						<or name="Inter Structure">
+							<graphics key="collapsed" value="false"/>
+							<feature name="Inheritance"/>
+							<feature name="Association"/>
+						</or>
+					</or>
+					<or name="Behavior">
+						<graphics key="collapsed" value="false"/>
+						<feature name="Call graph"/>
+						<feature name="Sequence of accesses"/>
+						<feature name="Frequency"/>
+						<feature name="CPU level"/>
+						<feature name="Memory level"/>
+						<feature name="Response time"/>
+					</or>
+					<or name="Evolution">
+						<graphics key="collapsed" value="false"/>
+						<feature name="By contributor">
+							<graphics key="collapsed" value="false"/>
+						</feature>
+						<feature name="By task">
+							<graphics key="collapsed" value="false"/>
+						</feature>
+					</or>
+				</or>
+				<and mandatory="true" name="Type">
+					<graphics key="collapsed" value="false"/>
+					<feature name="Monolith"/>
+					<feature mandatory="true" name="Microservices"/>
+				</and>
+				<and name="Visualization">
+					<graphics key="collapsed" value="false"/>
+					<and mandatory="true" name="Elements">
+						<graphics key="collapsed" value="false"/>
+						<feature mandatory="true" name="Granularity view"/>
+						<feature name="Cluster view"/>
+					</and>
+					<or mandatory="true" name="Relations">
+						<graphics key="collapsed" value="false"/>
+						<feature name="Structural relationship"/>
+						<feature name="Control flow"/>
+						<feature name="Data flow"/>
+					</or>
+				</and>
+			</and>
+			<and mandatory="true" name="Refactoring">
+				<graphics key="collapsed" value="false"/>
+				<and mandatory="true" name="Domain Knowledge">
+					<graphics key="collapsed" value="false"/>
+					<or mandatory="true" name="Aggregation Criteria">
+						<description>I don't really like the 'Same [something]' name</description>
+						<graphics key="collapsed" value="false"/>
+						<feature name="Task"/>
+						<feature name="Contributor"/>
+						<feature name="Lexical"/>
+						<feature name="Functional"/>
+						<feature name="Adjacency"/>
+						<feature name="Inter-service similarity"/>
+						<feature name="Contributor overlap"/>
+					</or>
+					<feature name="Expert knowledge">
+						<description>Architecture can decide some constraints as the max number of clusters</description>
+						<graphics key="collapsed" value="false"/>
+					</feature>
+				</and>
+				<and mandatory="true" name="Services Refactoring">
+					<graphics key="collapsed" value="false"/>
+					<or mandatory="true" name="Algorithms">
+						<graphics key="collapsed" value="false"/>
+						<feature name="Hierarchical clustering"/>
+						<feature name="Community detection"/>
+						<feature name="K-means++"/>
+						<feature name="Formal concept analysis"/>
+						<feature name="Genetic algorithms"/>
+						<feature name="Hungarian algorithm"/>
+						<feature name="Edge-cutting graph clustering"/>
+						<feature name="ILP optimization"/>
+					</or>
+					<or name="Manual Editing">
+						<graphics key="collapsed" value="false"/>
+						<feature name="Merge of clusters"/>
+						<feature name="Splitting of clusters"/>
+						<feature name="Transfer of elements between clusters"/>
+						<feature name="Rename cluster"/>
+						<feature name="Form cluster"/>
+					</or>
+				</and>
+				<or name="Functionality Refactoring">
+					<graphics key="collapsed" value="false"/>
+					<feature name="Asynchronization"/>
+					<feature name="Granularity refinement"/>
+				</or>
+			</and>
+			<and mandatory="true" name="Quality Assessment">
+				<graphics key="collapsed" value="false"/>
+				<or mandatory="true" name="Metrics">
+					<graphics key="collapsed" value="false"/>
+					<and name="Single Decomposition">
+						<graphics key="collapsed" value="false"/>
+						<feature name="Coupling"/>
+						<feature name="Cohesion"/>
+						<feature mandatory="true" name="Elements size"/>
+						<feature name="Complexity"/>
+						<feature name="Team size"/>
+						<feature name="Silhouette score"/>
+					</and>
+					<and name="Several Decompositions">
+						<graphics key="collapsed" value="false"/>
+						<feature mandatory="true" name="MoJoFM">
+							<description>MoJoFM</description>
+						</feature>
+						<feature name="Compare metrics"/>
+						<feature name="Purity"/>
+					</and>
+				</or>
+				<or name="Graphical Comparison">
+					<graphics key="collapsed" value="false"/>
+					<feature name="Color"/>
+					<feature name="Sizes"/>
+					<feature name="Distance between elements"/>
+				</or>
+			</and>
+		</and>
+	</struct>
+	<constraints>
+		<rule>
+			<imp>
+				<var>Static analysis</var>
+				<disj>
+					<var>Source code</var>
+					<var>Database schema</var>
+				</disj>
+			</imp>
+		</rule>
+		<rule>
+			<imp>
+				<var>Dynamic analysis</var>
+				<var>Runtime</var>
+			</imp>
+		</rule>
+		<rule>
+			<imp>
+				<var>Version analysis</var>
+				<var>Version history</var>
+			</imp>
+		</rule>
+		<rule>
+			<imp>
+				<var>Model analysis</var>
+				<disj>
+					<var>Higher-Level Models</var>
+					<var>Documentation</var>
+				</disj>
+			</imp>
+		</rule>
+		<rule>
+			<imp>
+				<var>Structure</var>
+				<disj>
+					<var>Static analysis</var>
+					<disj>
+						<var>Model analysis</var>
+						<var>External</var>
+					</disj>
+				</disj>
+			</imp>
+		</rule>
+		<rule>
+			<imp>
+				<var>Call graph</var>
+				<disj>
+					<var>Static analysis</var>
+					<disj>
+						<var>Dynamic analysis</var>
+						<disj>
+							<var>Model analysis</var>
+							<var>External</var>
+						</disj>
+					</disj>
+				</disj>
+			</imp>
+		</rule>
+		<rule>
+			<imp>
+				<var>Sequence of accesses</var>
+				<disj>
+					<var>Static analysis</var>
+					<disj>
+						<var>Dynamic analysis</var>
+						<disj>
+							<var>Model analysis</var>
+							<var>External</var>
+						</disj>
+					</disj>
+				</disj>
+			</imp>
+		</rule>
+		<rule>
+			<imp>
+				<disj>
+					<var>Frequency</var>
+					<disj>
+						<var>CPU level</var>
+						<disj>
+							<var>Memory level</var>
+							<var>Response time</var>
+						</disj>
+					</disj>
+				</disj>
+				<disj>
+					<var>Dynamic analysis</var>
+					<var>External</var>
+				</disj>
+			</imp>
+		</rule>
+		<rule>
+			<imp>
+				<var>Evolution</var>
+				<disj>
+					<var>Version analysis</var>
+					<var>External</var>
+				</disj>
+			</imp>
+		</rule>
+		<rule>
+			<imp>
+				<var>Structural relationship</var>
+				<disj>
+					<var>Structure</var>
+					<var>Evolution</var>
+				</disj>
+			</imp>
+		</rule>
+		<rule>
+			<imp>
+				<var>Control flow</var>
+				<disj>
+					<var>Structure</var>
+					<var>Behavior</var>
+				</disj>
+			</imp>
+		</rule>
+		<rule>
+			<imp>
+				<var>Data flow</var>
+				<disj>
+					<var>Structure</var>
+					<var>Behavior</var>
+				</disj>
+			</imp>
+		</rule>
+		<rule>
+			<imp>
+				<var>Task</var>
+				<var>By task</var>
+			</imp>
+		</rule>
+		<rule>
+			<imp>
+				<var>Contributor</var>
+				<var>By contributor</var>
+			</imp>
+		</rule>
+		<rule>
+			<imp>
+				<var>Lexical</var>
+				<disj>
+					<var>Structure</var>
+					<disj>
+						<var>Call graph</var>
+						<var>Sequence of accesses</var>
+					</disj>
+				</disj>
+			</imp>
+		</rule>
+		<rule>
+			<imp>
+				<var>Functional</var>
+				<disj>
+					<var>Call graph</var>
+					<var>Sequence of accesses</var>
+				</disj>
+			</imp>
+		</rule>
+		<rule>
+			<imp>
+				<var>Adjacency</var>
+				<disj>
+					<var>Structure</var>
+					<var>Behavior</var>
+				</disj>
+			</imp>
+		</rule>
+		<rule>
+			<imp>
+				<disj>
+					<var>Merge of clusters</var>
+					<disj>
+						<var>Splitting of clusters</var>
+						<var>Transfer of elements between clusters</var>
+					</disj>
+				</disj>
+				<var>Cluster view</var>
+			</imp>
+		</rule>
+		<rule>
+			<imp>
+				<disj>
+					<var>Coupling</var>
+					<disj>
+						<var>Cohesion</var>
+						<var>Complexity</var>
+					</disj>
+				</disj>
+				<disj>
+					<var>Structure</var>
+					<var>Behavior</var>
+				</disj>
+			</imp>
+		</rule>
+		<rule>
+			<imp>
+				<var>Team size</var>
+				<var>By contributor</var>
+			</imp>
+		</rule>
+		<rule>
+			<imp>
+				<var>Compare metrics</var>
+				<var>Single Decomposition</var>
+			</imp>
+		</rule>
+	</constraints>
+</featureModel>

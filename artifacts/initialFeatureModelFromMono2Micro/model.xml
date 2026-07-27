@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<featureModel>
+	<properties>
+		<graphics key="autolayoutconstraints" value="false"/>
+		<graphics key="legendautolayout" value="true"/>
+		<graphics key="showconstraints" value="true"/>
+		<graphics key="showshortnames" value="false"/>
+		<graphics key="layout" value="horizontal"/>
+		<graphics key="showcollapsedconstraints" value="true"/>
+		<graphics key="legendhidden" value="false"/>
+		<graphics key="layoutalgorithm" value="1"/>
+	</properties>
+	<struct>
+		<and mandatory="true" name="Monolith Microservices Identification">
+			<graphics key="collapsed" value="false"/>
+			<and mandatory="true" name="Collection">
+				<graphics key="collapsed" value="false"/>
+				<or mandatory="true" name="Collector">
+					<graphics key="collapsed" value="false"/>
+					<or name="Static Analysis">
+						<graphics key="collapsed" value="false"/>
+						<feature name="Source code"/>
+						<feature name="Database schema"/>
+					</or>
+					<and name="Dynamic Analysis">
+						<graphics key="collapsed" value="false"/>
+						<feature mandatory="true" name="Log traces"/>
+					</and>
+					<feature name="Version Analysis"/>
+				</or>
+				<or mandatory="true" name="Monolith Representations">
+					<graphics key="collapsed" value="false"/>
+					<feature name="Persistent domain entities"/>
+					<feature name="Functionalities sequence of accesses"/>
+					<feature name="Code Embeddings"/>
+					<feature name="Relations between entities"/>
+				</or>
+			</and>
+			<and mandatory="true" name="Decomposition Generation">
+				<graphics key="collapsed" value="false"/>
+				<or mandatory="true" name="Aggregation Criteria">
+					<graphics key="collapsed" value="false"/>
+					<feature name="Structural"/>
+					<feature name="Functional"/>
+					<feature name="Lexical"/>
+					<feature name="Evolutionary"/>
+				</or>
+				<or mandatory="true" name="Algorithms">
+					<graphics key="collapsed" value="false"/>
+					<feature name="Hierarchical clustering"/>
+					<feature name="Community detection"/>
+					<feature name="K-means++"/>
+				</or>
+			</and>
+			<and mandatory="true" name="Visualization">
+				<graphics key="collapsed" value="false"/>
+				<or mandatory="true" name="Views">
+					<graphics key="collapsed" value="false"/>
+					<feature name="Graph of clusters"/>
+					<feature name="Graph of Entities"/>
+				</or>
+			</and>
+			<and mandatory="true" name="Editing &amp; Modeling">
+				<graphics key="collapsed" value="false"/>
+				<and mandatory="true" name="Operations">
+					<graphics key="collapsed" value="false"/>
+					<feature name="Merge of clusters"/>
+					<feature name="Splitting of clusters"/>
+					<feature name="Transfer of entities between clusters"/>
+					<feature name="Duplicate elements between microservices"/>
+				</and>
+			</and>
+			<and mandatory="true" name="Quality Assessment">
+				<graphics key="collapsed" value="false"/>
+				<or mandatory="true" name="Metrics">
+					<graphics key="collapsed" value="false"/>
+					<feature name="Coupling"/>
+					<feature name="Cohesion"/>
+					<feature name="Size"/>
+					<feature name="Complexity"/>
+				</or>
+				<or mandatory="true" name="Decomposition Comparison">
+					<graphics key="collapsed" value="false"/>
+					<feature name="Similarity between two candidate decompositions"/>
+					<feature name="MoJoFM"/>
+				</or>
+				<and name="Graphical representation">
+					<graphics key="collapsed" value="false"/>
+					<feature name="Color"/>
+					<feature name="Sizes"/>
+					<feature name="Distances between elements"/>
+				</and>
+			</and>
+		</and>
+	</struct>
+</featureModel>
