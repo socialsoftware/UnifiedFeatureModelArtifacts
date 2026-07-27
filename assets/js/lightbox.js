@@ -30,6 +30,7 @@
   var zoom = 1;
   var fitWidth = true; // default: scale the strip to the viewport width
   var lastFocus = null;
+  var panned = false;  // did the current gesture move far enough to be a pan?
 
   /* ---------------------------------------------------------- build */
 
@@ -61,6 +62,15 @@
   var fitBtn = lb.querySelector('[data-act="fit"]');
   var prevBtn = lb.querySelector('[data-act="prev"]');
   var nextBtn = lb.querySelector('[data-act="next"]');
+
+  // Images are draggable by default, and that broke drag-to-pan: pressing on
+  // the strip started a native HTML5 image drag, which cancels the pointer
+  // capture and fires pointercancel. The pan handler below treats that as
+  // "gesture over", so panning died a few pixels in and left a drag ghost
+  // trailing the cursor. Both guards are needed -- the CSS -webkit-user-drag
+  // rule that accompanies this is non-standard and does nothing in Firefox.
+  img.draggable = false;
+  img.addEventListener('dragstart', function (e) { e.preventDefault(); });
 
   /* --------------------------------------------------------- render */
 
@@ -163,6 +173,20 @@
 
   /* -------------------------------------------------------- controls */
 
+  // Swallow the click that ends a pan, before the backdrop handler below sees
+  // it. The pan calls setPointerCapture on the stage, and pointer capture
+  // retargets the trailing click to the capturing element -- so releasing after
+  // a drag looks exactly like a genuine backdrop click and would close the
+  // viewer every time. Only a gesture that actually moved is swallowed, so a
+  // real click on the backdrop still closes. Capture phase, since the handler
+  // it guards is registered on this same element.
+  lb.addEventListener('click', function (e) {
+    if (panned) {
+      panned = false;
+      e.stopPropagation();
+    }
+  }, true);
+
   lb.addEventListener('click', function (e) {
     var btn = e.target.closest('button[data-act]');
     if (!btn) {
@@ -204,25 +228,42 @@
   // Drag to pan.
   var dragging = false, sx = 0, sy = 0, sl = 0, st = 0;
 
+  // Below this many pixels a gesture is a click with a shaky hand, not a drag.
+  var PAN_SLOP = 3;
+
   stage.addEventListener('pointerdown', function (e) {
     if (e.button !== 0) return;
     dragging = true;
+    panned = false;
     sx = e.clientX; sy = e.clientY;
     sl = stage.scrollLeft; st = stage.scrollTop;
     stage.classList.add('is-panning');
     stage.setPointerCapture(e.pointerId);
+    // Suppress the text/image selection the press would otherwise begin; a
+    // selection drag competes with the pan for the same gesture.
+    e.preventDefault();
   });
 
   stage.addEventListener('pointermove', function (e) {
     if (!dragging) return;
+    if (Math.abs(e.clientX - sx) > PAN_SLOP ||
+        Math.abs(e.clientY - sy) > PAN_SLOP) {
+      panned = true;
+    }
     stage.scrollLeft = sl - (e.clientX - sx);
     stage.scrollTop = st - (e.clientY - sy);
   });
 
   ['pointerup', 'pointercancel'].forEach(function (type) {
-    stage.addEventListener(type, function () {
+    stage.addEventListener(type, function (e) {
       dragging = false;
       stage.classList.remove('is-panning');
+      // Release explicitly rather than relying on the implicit release: a
+      // capture left dangling would keep routing the next gesture's events
+      // here even after this one ended.
+      if (stage.hasPointerCapture && stage.hasPointerCapture(e.pointerId)) {
+        stage.releasePointerCapture(e.pointerId);
+      }
     });
   });
 

@@ -440,6 +440,14 @@ figure.fm-image figcaption {
   max-width: none;      /* native size; the stage scrolls */
   transform-origin: 0 0;
   image-rendering: -webkit-optimize-contrast;
+  /* Drag-to-pan guards. The native image drag would otherwise hijack the
+     gesture and cancel the pan (see lightbox.js). -webkit-user-drag is
+     non-standard, so the JS is what covers Firefox; touch-action keeps a
+     touch drag panning the strip instead of scrolling the page. */
+  -webkit-user-drag: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
 }
 
 .lb-hint {
