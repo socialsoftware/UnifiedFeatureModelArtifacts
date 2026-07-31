@@ -5,10 +5,15 @@ _site/
 .jekyll-cache/
 .jekyll-metadata
 
-# NOTE: pages/ is deliberately NOT ignored. GitHub Pages builds from the
-# committed tree and never runs generate.py, so the generated markdown has to
-# be committed. Re-run `python3 generate.py` and commit the result after any
-# change under artifacts/, or the published site goes stale.
+# NOTE: pages/ and bundles/ are deliberately NOT ignored. GitHub Pages builds
+# from the committed tree and never runs generate.py, so the generated markdown
+# and the generated zip downloads both have to be committed. Re-run
+# `python3 generate.py` and commit the result after any change under artifacts/,
+# or the published site goes stale.
+#
+# The zips are written deterministically (sorted members, fixed timestamps and
+# modes), so an unchanged artifacts/ folder rebuilds byte-identically and these
+# committed binaries do not show a spurious diff on every build.
 
 # Bundler
 .bundle/

@@ -73,8 +73,11 @@ exclude:
   # underscore rule is otherwise the only thing standing between the generator
   # source and the published site.
   - _pages_gen
-  # Artifact subtrees that must not be published. papers/ holds the tool
-  # inventories, whose links all point at third-party PDFs that are not
-  # redistributable here; the Evaluation pages lift the venue and availability
-  # columns and render them instead (see parse_paper_inventory).
-  - artifacts/evaluation/papers
+  # NOTE: artifacts/evaluation/papers used to be excluded here. It is now
+  # published, as the output of extract-codebases-from-paper -- a skill whose
+  # product is exactly those inventories, so its page had nothing to show
+  # otherwise. The inventories' relative links to third-party paper PDFs do not
+  # resolve (those PDFs are not redistributable and are not in this tree); the
+  # skill page says so plainly. The Evaluation pages are unaffected: they read
+  # the inventories from artifacts/ via parse_paper_inventory, not from the
+  # built site.

@@ -5,17 +5,20 @@ Nothing is copied. The Pages source is the repository root, so Jekyll publishes
 records where each artifact lives and turns that into a URL.
 
 The one exception is ``build_bundle``, which creates a zip -- a
-"download the folder" link needs a real file.
+"download the folder" link needs a real file. Those land in ``bundles/`` at the
+repository root, never under ``artifacts/``: that tree holds only the original
+research artifacts, and a bundle is derived from it.
 """
 
 from __future__ import annotations
 
 import zipfile
 from pathlib import Path
-from typing import Dict, List, Optional, TypedDict
+from typing import Dict, List, Optional, Sequence, Tuple, TypedDict
 
-from .config import BUNDLE_NAME, BUNDLE_NAMES, INITIAL_BUNDLE_NAME, TOOLS
-from .paths import ARTIFACTS, BuildError, REPO
+from .config import (BUNDLE_NAME, INITIAL_BUNDLE_NAME, MERGED, SKILL_BUNDLE,
+                     SKILL_ORDER, SKILL_OUTPUT_BUNDLE, TOOLS, TOOL_META)
+from .paths import ARTIFACTS, BUNDLES, BuildError, REPO
 from .util import human_size
 
 
@@ -77,12 +80,18 @@ class Artifacts:
         return "{{BASE}}/" + rel.replace(" ", "%20")
 
 
-def build_bundle(folder: str, bundle_name: str) -> Path:
+def build_bundle(folder: str, bundle_name: str, arc_root: str = "") -> Path:
     """Zip a whole artifacts/ subfolder and return the archive path.
+
+    ``arc_root`` overrides the folder the archive is rooted at. A skill lives at
+    ``.claude/skills/<name>/``, and unzipping that path would bury the files
+    three levels deep for no reason; the skills pass their bare name instead.
 
     Everything else on the site is linked in place (see ``Artifacts``), but a
     "download the folder" link needs a real file, so these are the only
-    artifacts the script creates rather than merely locating.
+    artifacts the script creates rather than merely locating. They are written
+    to ``bundles/`` rather than beside what they archive, keeping ``artifacts/``
+    to the original research artifacts alone.
 
     That makes each a committed binary: GitHub Pages builds the committed tree
     and never runs this script, so re-run generate.py and commit the result
@@ -100,27 +109,124 @@ def build_bundle(folder: str, bundle_name: str) -> Path:
 
     # .project is FeatureIDE's Eclipse metadata: it names a local workspace
     # project and means nothing outside it, so it stays out of the download.
-    # Every bundle name is skipped, not just this folder's, so an archive can
-    # never end up nested inside another.
-    skip = (*BUNDLE_NAMES, ".project")
-    members = sorted(
-        (p for p in src.rglob("*") if p.is_file() and p.name not in skip),
-        key=lambda p: p.relative_to(src).as_posix())
+    root = arc_root or folder
+    members = [
+        # Rooted at a folder name so unzipping yields the folder, not a scatter
+        # of loose files in the reader's download directory.
+        (f"{root}/" + p.relative_to(src).as_posix(), p)
+        for p in src.rglob("*")
+        if p.is_file() and p.name != ".project"]
     if not members:
         raise BuildError(f"nothing to bundle under {src.relative_to(REPO)}/")
+    return write_bundle(bundle_name, members)
 
-    out = src / bundle_name
+
+def write_bundle(bundle_name: str, members: Sequence[Tuple[str, Path]]) -> Path:
+    """Zip explicit ``(archive name, source file)`` pairs, deterministically.
+
+    ``build_bundle`` archives a whole folder; this takes a list instead, for the
+    per-skill output archives whose members are scattered across
+    ``evaluation/analyses/`` and ``feature_model/.profiles/`` and so have no one
+    folder to root at.
+
+    ``bundle_name`` is a bare filename: every archive is written flat into
+    ``bundles/``, which is created here since it holds nothing but build output
+    and so need not exist in a fresh checkout.
+
+    Members are sorted by archive name and written with fixed timestamps and
+    modes, so unchanged inputs yield a byte-identical archive.
+    """
+    if not members:
+        raise BuildError(f"nothing to bundle into {bundle_name}")
+
+    BUNDLES.mkdir(exist_ok=True)
+    out = BUNDLES / bundle_name
     with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as zf:
-        for path in members:
-            # Rooted at the folder name so unzipping yields the folder, not a
-            # scatter of loose files in the reader's download directory.
-            info = zipfile.ZipInfo(
-                f"{folder}/" + path.relative_to(src).as_posix(),
-                date_time=(1980, 1, 1, 0, 0, 0))
+        for arcname, path in sorted(members, key=lambda m: m[0]):
+            info = zipfile.ZipInfo(arcname, date_time=(1980, 1, 1, 0, 0, 0))
             info.compress_type = zipfile.ZIP_DEFLATED
             info.external_attr = 0o644 << 16
             zf.writestr(info, path.read_bytes())
     return out
+
+
+def skill_output_members(skill: str) -> List[Tuple[str, Path]]:
+    """The artifacts one skill produced, as ``(archive name, path)`` pairs.
+
+    Ownership is derived from ``TOOL_META[tool]["skill"]`` and ``MERGED`` rather
+    than declared, so adding a tool never means editing a list here.
+    ``refresh-feature-model-infos`` edits files in place and owns nothing, so it
+    yields an empty list and gets no archive.
+    """
+    profiles = ARTIFACTS / "feature_model" / ".profiles"
+    analyses = ARTIFACTS / "evaluation" / "analyses"
+    members: List[Tuple[str, Path]] = []
+
+    if skill == "extract-codebases-from-paper":
+        for paper_md in sorted((ARTIFACTS / "evaluation" / "papers").glob("*.md")):
+            members.append((f"papers/{paper_md.name}", paper_md))
+        return members
+
+    if skill == "merge-profiles":
+        # A merged profile is filed under its stem or under its site key, which
+        # coincide for `wang` -- hence the dedupe, or the archive would carry
+        # the same member twice.
+        seen = set()
+        for key, stem, _ in MERGED:
+            for name in (f"{stem}.profile", f"{key}.profile"):
+                path = profiles / name
+                if path.is_file() and name not in seen:
+                    seen.add(name)
+                    members.append((f".profiles/{name}", path))
+        return members
+
+    if skill == "verify-analysis":
+        # The reviewed twins are this skill's product: one per automated
+        # mapping, re-derived after the cited evidence was re-checked.
+        for path in sorted(profiles.glob("*_user_review*.profile")):
+            members.append((f".profiles/{path.name}", path))
+        return members
+
+    # codebase-map and docs-map: the tools each one mapped.
+    for tool in TOOLS:
+        if TOOL_META[tool]["skill"] != skill:
+            continue
+        for rel in ("analysis.md", "README.md"):
+            path = analyses / tool / rel
+            if path.is_file():
+                members.append((f"analyses/{tool}/{rel}", path))
+        path = profiles / f"{tool}.profile"
+        if path.is_file():
+            members.append((f".profiles/{tool}.profile", path))
+    return members
+
+
+def register_skill_artifacts(artifacts: Artifacts) -> None:
+    """Register each skill's own files and build its two download archives.
+
+    ``SKILL.md`` carries YAML frontmatter, so Jekyll renders it to ``SKILL.html``
+    and no raw ``.md`` is served -- the skill pages link GitHub raw for reading
+    it directly. The archives are what make the whole folder downloadable, and
+    the ``references/*.md`` files have no frontmatter so they are served as-is.
+    """
+    skills_dir = ARTIFACTS / ".claude" / "skills"
+    for skill in SKILL_ORDER:
+        base = skills_dir / skill
+        artifacts.register(base / "SKILL.md", f"skills/{skill}/SKILL.md")
+
+        for ref in sorted((base / "references").glob("*.md")):
+            artifacts.register(ref, f"skills/{skill}/references/{ref.name}")
+
+        artifacts.register(
+            build_bundle(f".claude/skills/{skill}",
+                         SKILL_BUNDLE.format(skill=skill), arc_root=skill),
+            f"bundles/{skill}-skill.zip")
+
+        members = skill_output_members(skill)
+        if members:
+            artifacts.register(
+                write_bundle(SKILL_OUTPUT_BUNDLE.format(skill=skill), members),
+                f"bundles/{skill}-outputs.zip")
 
 
 class BuildSummary(TypedDict):
@@ -217,6 +323,15 @@ def register_artifacts(artifacts: Artifacts) -> BuildSummary:
         artifacts.register(base / "analysis.md", f"analyses/{tool}-analysis.md")
         artifacts.register(base / "README.md", f"analyses/{tool}-readme.md",
                            required=False)
+
+    # The paper inventories. Published as the output of
+    # extract-codebases-from-paper -- their relative links to paper PDFs do not
+    # resolve here (those PDFs are not redistributable), which the skill page
+    # says plainly.
+    for paper_md in sorted((ARTIFACTS / "evaluation" / "papers").glob("*.md")):
+        artifacts.register(paper_md, f"papers/{paper_md.stem}.md")
+
+    register_skill_artifacts(artifacts)
 
     return {
         "images": images,

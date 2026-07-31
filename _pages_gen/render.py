@@ -16,8 +16,8 @@ from pathlib import Path
 from typing import Dict, Iterable, List, Sequence, Tuple
 
 from .artifacts import Artifacts
-from .config import (BANNER, IMAGE_PREFIX, PAPERS, TOOLS, TOOL_LABEL,
-                     TOOL_META)
+from .config import (BANNER, IMAGE_PREFIX, PAPERS, SKILL_ORDER, TOOLS,
+                     TOOL_LABEL, TOOL_META)
 from .paths import PAGES
 from .util import png_size
 
@@ -194,6 +194,21 @@ def sub_nav(active_paper: str = "", active_tool: str = "") -> str:
 
     rows.append("</nav>")
     return "\n".join(rows) + "\n"
+
+
+def skill_nav(active: str = "") -> str:
+    """The Skills navigation strip: an Explanation tab, then one per skill.
+
+    Static HTML for the same reason as ``sub_nav``: an artifact appendix gets
+    cited by URL, so each skill keeps its own address. One row only -- skills
+    have no second level -- so it reuses the ``.sub-nav-papers`` styling.
+    """
+    items = [_sub_nav_item("Explanation", "{{BASE}}/skills/", not active)]
+    items += [
+        _sub_nav_item(name, "{{BASE}}/skills/" + name + "/", name == active)
+        for name in SKILL_ORDER]
+    return ('<nav class="sub-nav" aria-label="Skills">'
+            '<ul class="sub-nav-papers">' + "".join(items) + "</ul></nav>\n")
 
 
 def _sub_nav_item(label: str, href: str, current: bool) -> str:

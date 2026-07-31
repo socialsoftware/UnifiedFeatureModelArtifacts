@@ -13,10 +13,10 @@ import sys
 from typing import Dict
 
 from .artifacts import Artifacts, BuildSummary, register_artifacts
-from .config import COLOURS, COLOUR_SHORT, PAPERS, TOOLS
+from .config import COLOURS, COLOUR_SHORT, PAPERS, SKILL_ORDER, TOOLS
 from .pages import (render_eval_tool_page, render_feature_model,
                     render_initial_model, render_meta_review, render_paper_page,
-                    render_skills, render_union_page)
+                    render_skill_page, render_skills, render_union_page)
 from .paths import ARTIFACTS, BuildError
 from .postprocess import apply_baseurl, prune_pages
 from .report import tally_profiles
@@ -33,6 +33,8 @@ def build() -> Dict[str, object]:
     render_initial_model(assets)
     studies = render_meta_review(assets)
     skills = render_skills(assets)
+    for skill in SKILL_ORDER:
+        render_skill_page(skill, assets)
 
     render_union_page("all-tools", assets)
     for paper in PAPERS:

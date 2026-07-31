@@ -10,6 +10,13 @@ REPO = Path(__file__).resolve().parent.parent
 ARTIFACTS = REPO / "artifacts"
 PAGES = REPO / "pages"
 
+#: Where the generated zip downloads are written. Deliberately *outside*
+#: ``artifacts/``: that tree holds only the original research artifacts, whereas
+#: every file here is derived and rebuilt from it by generate.py. Keeping the
+#: two apart also means the bundler never has to skip its own output when
+#: collecting members.
+BUNDLES = REPO / "bundles"
+
 
 class BuildError(RuntimeError):
     """A required input is missing or malformed."""

@@ -53,7 +53,7 @@ Each is a FeatureIDE colour profile that paints the model with that tool's mappi
 <th>Size</th>
 </tr></thead>
 <tbody>
-<tr><td><a href="{{ '/artifacts/feature_model/feature_model.zip' | relative_url }}" download><code>feature_model.zip</code></a></td><td>Everything below in one archive: the model, every colour profile, and the configuration</td><td>169 KB</td></tr>
+<tr><td><a href="{{ '/bundles/feature_model.zip' | relative_url }}" download><code>feature_model.zip</code></a></td><td>Everything below in one archive: the model, every colour profile, and the configuration</td><td>169 KB</td></tr>
 <tr><td><a href="{{ '/artifacts/feature_model/feature_model.xml' | relative_url }}" download><code>feature_model.xml</code></a></td><td>The feature model (FeatureIDE XML)</td><td>10 KB</td></tr>
 <tr><td><a href="{{ '/artifacts/feature_model/extended.png' | relative_url }}" download><code>feature_model.png</code></a></td><td>The rendered model, as shown above</td><td>158 KB</td></tr>
 <tr><td><a href="{{ '/artifacts/feature_model/configs/default.xml' | relative_url }}" download><code>feature_model_config.xml</code></a></td><td>FeatureIDE configuration listing every feature</td><td>3 KB</td></tr>

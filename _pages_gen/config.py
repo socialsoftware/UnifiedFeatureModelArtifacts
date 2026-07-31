@@ -13,14 +13,14 @@ from __future__ import annotations
 from typing import Dict, List, Tuple
 
 #: The whole-folder downloads offered on the Feature Model and Initial Model
-#: pages. Each lives inside the folder it archives, so the bundler skips any of
-#: these names when collecting members.
+#: pages.
 BUNDLE_NAME = "feature_model.zip"
 INITIAL_BUNDLE_NAME = "initial_feature_model.zip"
 
-#: Every bundle name, so the bundler can skip all of them when collecting
-#: members and never nest one archive inside another.
-BUNDLE_NAMES: Tuple[str, ...] = (BUNDLE_NAME, INITIAL_BUNDLE_NAME)
+#: Per-skill downloads, offered on each skill's own page: the skill folder
+#: itself, and the artifacts that skill produced.
+SKILL_BUNDLE = "{skill}-skill.zip"
+SKILL_OUTPUT_BUNDLE = "{skill}-outputs.zip"
 
 #: Marks a generated page. It names ``generate.py`` because that is the command
 #: a reader runs, even though the writing is done from this package.
@@ -218,6 +218,54 @@ SKILL_SUMMARY: Dict[str, str] = {
         "sync with it, reports any discrepancies, and updates them once "
         "approved.",
 }
+
+#: What each skill writes, in one line, for the "What it produced" section of
+#: its page. The files themselves are resolved from TOOL_META and MERGED rather
+#: than listed here, so adding a tool never means editing this table.
+#: ``refresh-feature-model-infos`` is absent on purpose: it edits files in place
+#: and produces nothing of its own to download.
+SKILL_OUTPUT_BLURB: Dict[str, str] = {
+    "extract-codebases-from-paper":
+        "A tool inventory per paper, listing every tool the paper covers with "
+        "its venue, its availability, and a link to its analysis.",
+    "codebase-map":
+        "An analysis document, a run README and a colour profile for each of "
+        "the tools mapped from source.",
+    "docs-map":
+        "The same three files as <code>codebase-map</code>, for the one tool "
+        "mapped from its documentation rather than its source.",
+    "verify-analysis":
+        "The reviewed colour profiles — the reconciled twin of each automated "
+        "mapping, after the cited evidence was re-checked.",
+    "merge-profiles":
+        "The union profiles, each combining a chosen set of per-tool mappings.",
+}
+
+#: The layout the skills expect of the repository they run in. They were run
+#: against an earlier working tree, so this is deliberately NOT this
+#: repository's layout -- the paths inside SKILL.md (feature_model/
+#: representation/.profiles/, my_paper/text.md) refer to the tree below.
+#: Reproduced so a reader can rebuild it and re-run them.
+SKILL_REPO_LAYOUT = """\
+.
+├── feature_model/
+│   └── representation/
+│       ├── feature_model.xml        the canonical model the skills read
+│       └── .profiles/
+│           └── <tool>.profile       one colour profile per tool
+├── evaluation/
+│   ├── analyses/
+│   │   └── <tool>/
+│   │       ├── analysis.md          the mapping, every finding citing evidence
+│   │       └── README.md            how the tool was obtained and run
+│   └── papers/
+│       └── <PaperKey>.md            the tool inventory for one paper
+├── papers/
+│   ├── surveys/<PaperKey>.pdf       the source papers
+│   └── tools/<Tool>.pdf             the per-tool papers
+└── ../extracted-codebases/
+    └── <tool>/                      cloned repositories, OUTSIDE the repo\
+"""
 
 
 #: One line per downloadable mapping, for the Colour profiles table. Keyed by

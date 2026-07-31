@@ -25,7 +25,7 @@ permalink: "/initial-model/"
 <th>Size</th>
 </tr></thead>
 <tbody>
-<tr><td><a href="{{ '/artifacts/initialFeatureModelFromMono2Micro/initial_feature_model.zip' | relative_url }}" download><code>initial_feature_model.zip</code></a></td><td>Everything below in one archive: the model, the rendered image, and the configuration</td><td>52 KB</td></tr>
+<tr><td><a href="{{ '/bundles/initial_feature_model.zip' | relative_url }}" download><code>initial_feature_model.zip</code></a></td><td>Everything below in one archive: the model, the rendered image, and the configuration</td><td>52 KB</td></tr>
 <tr><td><a href="{{ '/artifacts/initialFeatureModelFromMono2Micro/model.xml' | relative_url }}" download><code>initial_feature_model.xml</code></a></td><td>The initial feature model (FeatureIDE XML)</td><td>3 KB</td></tr>
 <tr><td><a href="{{ '/artifacts/initialFeatureModelFromMono2Micro/initial_extended.png' | relative_url }}" download><code>initial_feature_model.png</code></a></td><td>The rendered model, as shown above</td><td>53 KB</td></tr>
 </tbody>

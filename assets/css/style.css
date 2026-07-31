@@ -343,6 +343,27 @@ figure.fm-image figcaption {
   object-position: left center;
 }
 
+/* A plain illustration rather than a zoomable mapping export: shown whole, at
+   its own size, with no lightbox button wrapped around it. */
+figure.fm-plain {
+  margin: 1.5rem 0;
+  text-align: center;
+}
+
+figure.fm-plain img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+}
+
+figure.fm-plain figcaption {
+  margin-top: .7rem;
+  font-size: .88rem;
+  color: var(--fg-muted);
+  text-align: left;
+}
+
 .fm-shot .fm-shot-label {
   display: flex;
   justify-content: space-between;
@@ -438,6 +459,12 @@ figure.fm-image figcaption {
   margin: 1.5rem 0 2rem;
   padding: 0;
   list-style: none;
+}
+
+/* Six skills wrap 3+3 rather than 4+2, which leaves the second row half
+   empty and the first row's cards too narrow for the summary text. */
+@media (min-width: 60rem) {
+  .skill-cards { grid-template-columns: repeat(3, 1fr); }
 }
 
 .cards li {

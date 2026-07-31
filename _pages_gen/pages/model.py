@@ -12,8 +12,6 @@ from typing import Tuple
 
 from ..artifacts import Artifacts
 from ..config import MAPPING_BLURB, MERGED, PAPERS, TOOLS, TOOL_LABEL, TOOL_META
-from ..parse import parse_feature_model
-from ..paths import ARTIFACTS
 from ..render import downloads_block, figure, table, write_page
 from ..util import png_size
 
@@ -101,19 +99,10 @@ def _profile_row(assets: Artifacts, label: str, stem: str,
 
 def render_initial_model(assets: Artifacts) -> None:
     """Tab 2: the model that preceded generalisation."""
-    tree, constraints = parse_feature_model(
-        ARTIFACTS / "initialFeatureModelFromMono2Micro" / "model.xml")
-    nodes = list(tree.walk())
     width, height = png_size(assets.path("images/initial_feature_model.png"))
 
     body = [
         "# The initial feature model\n",
-        f"This is the initial feature model, derived top-down from a single "
-        f"tool: Mono2Micro's identification pipeline. It has "
-        f"<b>{len(nodes)}</b> features and <b>{len(constraints)}</b> "
-        f"cross-tree constraints, rooted at "
-        f"<i>{html.escape(tree.name)}</i>.\n",
-
         figure("The initial feature model, before the bottom-up generalisation.",
                [{"file": assets.url("images/initial_feature_model.png"),
                  "label": "Initial feature model",
