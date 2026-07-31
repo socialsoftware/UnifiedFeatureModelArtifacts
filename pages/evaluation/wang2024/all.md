@@ -22,7 +22,7 @@ permalink: "/evaluation/wang2024/all/"
 </div>
 </figure>
 
-## Downloads
+## Download artifacts
 
 <div class="table-scroll">
 <table class="downloads">

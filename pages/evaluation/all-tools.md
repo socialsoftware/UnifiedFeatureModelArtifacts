@@ -21,7 +21,7 @@ permalink: "/evaluation/all-tools/"
 </div>
 </figure>
 
-## Downloads
+## Download artifacts
 
 <div class="table-scroll">
 <table class="downloads">

@@ -68,8 +68,7 @@ def render_feature_model(assets: Artifacts) -> None:
     if "models/feature_model_config.xml" in assets:
         entries.append(("models/feature_model_config.xml",
                         "FeatureIDE configuration listing every feature"))
-    body.append(downloads_block(assets, entries,
-                                heading="## Download Artifacts"))
+    body.append(downloads_block(assets, entries))
 
     write_page("feature-model.md",
                {"layout": "default", "title": "Feature model",
@@ -109,13 +108,11 @@ def render_initial_model(assets: Artifacts) -> None:
 
     body = [
         "# The initial feature model\n",
-        f"Before the generalisation, the model was derived top-down from a "
-        f"single tool: Mono2Micro's identification pipeline. This initial "
-        f"version has <b>{len(nodes)}</b> features and "
-        f"<b>{len(constraints)}</b> cross-tree constraints, rooted at "
-        f"<i>{html.escape(tree.name)}</i>. It is published so the two can be "
-        f"compared — the difference is what the bottom-up phase, driven by the "
-        f"meta-review and the tool mappings, actually added.\n",
+        f"This is the initial feature model, derived top-down from a single "
+        f"tool: Mono2Micro's identification pipeline. It has "
+        f"<b>{len(nodes)}</b> features and <b>{len(constraints)}</b> "
+        f"cross-tree constraints, rooted at "
+        f"<i>{html.escape(tree.name)}</i>.\n",
 
         figure("The initial feature model, before the bottom-up generalisation.",
                [{"file": assets.url("images/initial_feature_model.png"),
@@ -125,6 +122,9 @@ def render_initial_model(assets: Artifacts) -> None:
     ]
 
     entries = [
+        ("bundles/initial_feature_model.zip",
+         "Everything below in one archive: the model, the rendered image, "
+         "and the configuration"),
         ("models/initial_feature_model.xml",
          "The initial feature model (FeatureIDE XML)"),
         ("images/initial_feature_model.png", "The rendered model, as shown above"),

@@ -20,7 +20,7 @@ permalink: "/evaluation/zhong2025/micro2micro/"
 </div>
 </figure>
 
-## Downloads
+## Download artifacts
 
 <div class="table-scroll">
 <table class="downloads">

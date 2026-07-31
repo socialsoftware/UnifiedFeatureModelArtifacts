@@ -12,9 +12,15 @@ from __future__ import annotations
 
 from typing import Dict, List, Tuple
 
-#: The whole-folder download offered on the Feature Model page. It lives inside
-#: the folder it archives, so the bundler skips it when collecting members.
+#: The whole-folder downloads offered on the Feature Model and Initial Model
+#: pages. Each lives inside the folder it archives, so the bundler skips any of
+#: these names when collecting members.
 BUNDLE_NAME = "feature_model.zip"
+INITIAL_BUNDLE_NAME = "initial_feature_model.zip"
+
+#: Every bundle name, so the bundler can skip all of them when collecting
+#: members and never nest one archive inside another.
+BUNDLE_NAMES: Tuple[str, ...] = (BUNDLE_NAME, INITIAL_BUNDLE_NAME)
 
 #: Marks a generated page. It names ``generate.py`` because that is the command
 #: a reader runs, even though the writing is done from this package.

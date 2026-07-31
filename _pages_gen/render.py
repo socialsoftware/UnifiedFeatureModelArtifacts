@@ -84,13 +84,13 @@ def figure(caption: str, shots: Sequence[Dict[str, str]]) -> str:
 
 
 def downloads_block(assets: Artifacts, entries: Sequence[Tuple[str, str]],
-                    heading: str = "## Downloads") -> str:
+                    heading: str = "## Download artifacts") -> str:
     """A downloads table: (asset-rel-path, description).
 
     ``heading`` is overridable because a page can carry more than one table --
     a tool page with a proposed model extension keeps that download under its
-    own section rather than repeating "Downloads". Pass an empty string to omit
-    the heading entirely.
+    own section rather than repeating "Download artifacts". Pass an empty string
+    to omit the heading entirely.
     """
     rows = []
     for rel, description in entries:

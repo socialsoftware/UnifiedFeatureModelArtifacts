@@ -20,7 +20,7 @@ permalink: "/evaluation/wang2024/mosaic/"
 </div>
 </figure>
 
-## Downloads
+## Download artifacts
 
 <div class="table-scroll">
 <table class="downloads">

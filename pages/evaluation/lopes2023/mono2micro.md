@@ -33,7 +33,7 @@ nav_order: 6
 </div>
 </figure>
 
-## Downloads
+## Download artifacts
 
 <div class="table-scroll">
 <table class="downloads">

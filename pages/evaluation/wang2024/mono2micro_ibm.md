@@ -20,7 +20,7 @@ permalink: "/evaluation/wang2024/mono2micro_ibm/"
 </div>
 </figure>
 
-## Downloads
+## Download artifacts
 
 <div class="table-scroll">
 <table class="downloads">

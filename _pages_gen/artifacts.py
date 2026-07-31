@@ -4,7 +4,7 @@ Nothing is copied. The Pages source is the repository root, so Jekyll publishes
 ``artifacts/`` in place and the site links straight into it; this module only
 records where each artifact lives and turns that into a URL.
 
-The one exception is ``build_feature_model_bundle``, which creates a zip -- a
+The one exception is ``build_bundle``, which creates a zip -- a
 "download the folder" link needs a real file.
 """
 
@@ -14,7 +14,7 @@ import zipfile
 from pathlib import Path
 from typing import Dict, List, Optional, TypedDict
 
-from .config import BUNDLE_NAME, TOOLS
+from .config import BUNDLE_NAME, BUNDLE_NAMES, INITIAL_BUNDLE_NAME, TOOLS
 from .paths import ARTIFACTS, BuildError, REPO
 from .util import human_size
 
@@ -77,43 +77,45 @@ class Artifacts:
         return "{{BASE}}/" + rel.replace(" ", "%20")
 
 
-def build_feature_model_bundle() -> Path:
-    """Zip the whole feature_model/ folder and return the archive path.
+def build_bundle(folder: str, bundle_name: str) -> Path:
+    """Zip a whole artifacts/ subfolder and return the archive path.
 
     Everything else on the site is linked in place (see ``Artifacts``), but a
-    "download the folder" link needs a real file, so this is the one artifact
-    the script creates rather than merely locating.
+    "download the folder" link needs a real file, so these are the only
+    artifacts the script creates rather than merely locating.
 
-    That makes it a committed binary: GitHub Pages builds the committed tree and
-    never runs this script, so re-run generate.py and commit the result after
-    changing anything under artifacts/feature_model/, or the bundle silently
-    serves stale profiles.
+    That makes each a committed binary: GitHub Pages builds the committed tree
+    and never runs this script, so re-run generate.py and commit the result
+    after changing anything under the bundled folder, or the download silently
+    serves stale contents.
 
     Written deterministically -- sorted members, fixed timestamps and modes --
     so an unchanged folder yields a byte-identical archive. Otherwise checkout
     mtimes would leak into the zip and every build would show a spurious diff on
-    a 70 KB binary.
+    a binary.
     """
-    src = ARTIFACTS / "feature_model"
+    src = ARTIFACTS / folder
     if not src.is_dir():
         raise BuildError(f"missing {src.relative_to(REPO)}/")
 
     # .project is FeatureIDE's Eclipse metadata: it names a local workspace
     # project and means nothing outside it, so it stays out of the download.
+    # Every bundle name is skipped, not just this folder's, so an archive can
+    # never end up nested inside another.
+    skip = (*BUNDLE_NAMES, ".project")
     members = sorted(
-        (p for p in src.rglob("*")
-         if p.is_file() and p.name not in (BUNDLE_NAME, ".project")),
+        (p for p in src.rglob("*") if p.is_file() and p.name not in skip),
         key=lambda p: p.relative_to(src).as_posix())
     if not members:
         raise BuildError(f"nothing to bundle under {src.relative_to(REPO)}/")
 
-    out = src / BUNDLE_NAME
+    out = src / bundle_name
     with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as zf:
         for path in members:
-            # Rooted at feature_model/ so unzipping yields the folder, not a
+            # Rooted at the folder name so unzipping yields the folder, not a
             # scatter of loose files in the reader's download directory.
             info = zipfile.ZipInfo(
-                "feature_model/" + path.relative_to(src).as_posix(),
+                f"{folder}/" + path.relative_to(src).as_posix(),
                 date_time=(1980, 1, 1, 0, 0, 0))
             info.compress_type = zipfile.ZIP_DEFLATED
             info.external_attr = 0o644 << 16
@@ -166,7 +168,8 @@ def register_artifacts(artifacts: Artifacts) -> BuildSummary:
 
     # Built, not located -- and built here, once the profiles above are known
     # to exist, so the download can never ship a folder missing them.
-    artifacts.register(build_feature_model_bundle(), "bundles/feature_model.zip")
+    artifacts.register(build_bundle("feature_model", BUNDLE_NAME),
+                       "bundles/feature_model.zip")
 
     # FeatureIDE models: the canonical one, the initial one, and the
     # tool-specific extended ones.
@@ -174,6 +177,12 @@ def register_artifacts(artifacts: Artifacts) -> BuildSummary:
                        "models/feature_model.xml")
     artifacts.register(ARTIFACTS / "initialFeatureModelFromMono2Micro" / "model.xml",
                        "models/initial_feature_model.xml")
+
+    # The initial model's whole-folder download, built after the two files
+    # above are known to exist, for the same reason as the bundle above.
+    artifacts.register(
+        build_bundle("initialFeatureModelFromMono2Micro", INITIAL_BUNDLE_NAME),
+        "bundles/initial_feature_model.zip")
 
     extended_models: List[str] = []
     eval_models = ARTIFACTS / "evaluation" / "feature_models"

@@ -43,7 +43,7 @@ Each is a FeatureIDE colour profile that paints the model with that tool's mappi
 </table>
 </div>
 
-## Download Artifacts
+## Download artifacts
 
 <div class="table-scroll">
 <table class="downloads">

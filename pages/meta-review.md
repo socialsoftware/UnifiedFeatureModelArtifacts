@@ -13,7 +13,7 @@ A review of <b>11</b> secondary studies on monolith-to-microservice decompositio
 <p>The same table in two formats: CSV and PDF.</p>
 
 
-## Downloads
+## Download artifacts
 
 <div class="table-scroll">
 <table class="downloads">
