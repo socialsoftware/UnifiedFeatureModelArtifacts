@@ -16,36 +16,3 @@ Reconciles several runs of the mapping skills, which are non-deterministic and m
 ## The skill
 
 <p><a href="https://raw.githubusercontent.com/socialsoftware/UnifiedFeatureModelArtifacts/main/artifacts/.claude/skills/verify-analysis/SKILL.md" download><code>SKILL.md</code></a> — the procedure itself, as Markdown.</p>
-
-
-<div class="table-scroll">
-<table class="downloads">
-<thead><tr>
-<th>File</th>
-<th>What it is</th>
-<th>Size</th>
-</tr></thead>
-<tbody>
-<tr><td><a href="{{ '/bundles/verify-analysis-skill.zip' | relative_url }}" download><code>verify-analysis-skill.zip</code></a></td><td>The whole skill folder: SKILL.md and its references</td><td>5 KB</td></tr>
-</tbody>
-</table>
-</div>
-
-
-## What it produced
-
-The reviewed colour profiles — the reconciled twin of each automated mapping, after the cited evidence was re-checked.
-
-
-<div class="table-scroll">
-<table class="downloads">
-<thead><tr>
-<th>File</th>
-<th>What it is</th>
-<th>Size</th>
-</tr></thead>
-<tbody>
-<tr><td><a href="{{ '/bundles/verify-analysis-outputs.zip' | relative_url }}" download><code>verify-analysis-outputs.zip</code></a></td><td>Everything this skill produced</td><td>12 KB</td></tr>
-</tbody>
-</table>
-</div>

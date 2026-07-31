@@ -18,20 +18,6 @@ Combines the per-tool colour profiles into a union profile showing what a chosen
 <p><a href="https://raw.githubusercontent.com/socialsoftware/UnifiedFeatureModelArtifacts/main/artifacts/.claude/skills/merge-profiles/SKILL.md" download><code>SKILL.md</code></a> — the procedure itself, as Markdown.</p>
 
 
-<div class="table-scroll">
-<table class="downloads">
-<thead><tr>
-<th>File</th>
-<th>What it is</th>
-<th>Size</th>
-</tr></thead>
-<tbody>
-<tr><td><a href="{{ '/bundles/merge-profiles-skill.zip' | relative_url }}" download><code>merge-profiles-skill.zip</code></a></td><td>The whole skill folder: SKILL.md and its references</td><td>5 KB</td></tr>
-</tbody>
-</table>
-</div>
-
-
 ## What it produced
 
 The union profiles, each combining a chosen set of per-tool mappings.

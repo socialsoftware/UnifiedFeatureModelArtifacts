@@ -18,20 +18,6 @@ Checks whether the files that depend on the feature model are still in sync with
 <p><a href="https://raw.githubusercontent.com/socialsoftware/UnifiedFeatureModelArtifacts/main/artifacts/.claude/skills/refresh-feature-model-infos/SKILL.md" download><code>SKILL.md</code></a> — the procedure itself, as Markdown.</p>
 
 
-<div class="table-scroll">
-<table class="downloads">
-<thead><tr>
-<th>File</th>
-<th>What it is</th>
-<th>Size</th>
-</tr></thead>
-<tbody>
-<tr><td><a href="{{ '/bundles/refresh-feature-model-infos-skill.zip' | relative_url }}" download><code>refresh-feature-model-infos-skill.zip</code></a></td><td>The whole skill folder: SKILL.md and its references</td><td>3 KB</td></tr>
-</tbody>
-</table>
-</div>
-
-
 ## What it produced
 
 Nothing of its own. This skill edits the files that describe the feature model in place, so its output is the change itself rather than a new artifact.

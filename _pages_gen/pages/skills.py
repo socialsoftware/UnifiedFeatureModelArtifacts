@@ -11,8 +11,8 @@ import html
 from typing import Dict, List, Tuple
 
 from ..artifacts import Artifacts
-from ..config import (RAW_BASE, SKILL_ORDER, SKILL_OUTPUT_BLURB,
-                      SKILL_REPO_LAYOUT, SKILL_SUMMARY)
+from ..config import (RAW_BASE, SKILL_NO_BUNDLE_NOTE, SKILL_ORDER,
+                      SKILL_OUTPUT_BLURB, SKILL_REPO_LAYOUT, SKILL_SUMMARY)
 from ..parse import parse_skills
 from ..paths import REPO, BuildError
 from ..render import downloads_block, skill_nav, write_page
@@ -95,6 +95,12 @@ def render_skills(assets: Artifacts) -> int:
         skill = skills[name]
         page = "{{BASE}}/skills/" + name + "/"
         tools_used = html.escape(skill["tools"]) if skill["tools"] else "—"
+        # A skill with no references/ ships no archive, so the card ends at
+        # "read the skill" rather than offering a zip that was never built.
+        bundle = f"bundles/{name}-skill.zip"
+        download = (
+            f' · <a href="{assets.url(bundle)}" download>download</a>'
+            if bundle in assets else "")
         body.append(
             "<li>"
             f'<h3><a href="{page}"><code>{html.escape(name)}</code></a></h3>'
@@ -102,9 +108,7 @@ def render_skills(assets: Artifacts) -> int:
             f'<p class="card-files">Tools: {tools_used} · '
             f'<a href="{page}">open</a> · '
             f'<a href="{{{{BASE}}}}/artifacts/.claude/skills/{name}/SKILL.html">'
-            "read the skill</a> · "
-            f'<a href="{assets.url(f"bundles/{name}-skill.zip")}" download>'
-            "download</a></p>"
+            f"read the skill</a>{download}</p>"
             "</li>")
     body.append("</ul>\n")
 
@@ -141,15 +145,20 @@ def render_skill_page(name: str, assets: Artifacts) -> None:
              "The blank analysis document each mapping fills in")):
         if key in assets:
             entries.append((key, description))
-    entries.append((f"bundles/{name}-skill.zip",
-                    "The whole skill folder: SKILL.md and its references"))
+    # Only skills with references/ get an archive -- for the rest it would hold
+    # SKILL.md alone, which the paragraph below already links directly.
+    bundle = f"bundles/{name}-skill.zip"
+    if bundle in assets:
+        entries.append(
+            (bundle, "The whole skill folder: SKILL.md and its references"))
 
     body.append("\n## The skill\n")
     body.append(
         f'<p><a href="{RAW_BASE}/artifacts/.claude/skills/{name}/SKILL.md" '
         f"download><code>SKILL.md</code></a> — the procedure itself, as "
         "Markdown.</p>\n")
-    body.append(downloads_block(assets, entries, heading=""))
+    if entries:
+        body.append(downloads_block(assets, entries, heading=""))
 
     blurb = SKILL_OUTPUT_BLURB.get(name)
     if blurb:
@@ -167,12 +176,12 @@ def render_skill_page(name: str, assets: Artifacts) -> None:
             assets,
             [(f"bundles/{name}-outputs.zip", "Everything this skill produced")],
             heading=""))
-    else:
+    elif name in SKILL_NO_BUNDLE_NOTE:
+        # Ships no archive, but the section still earns its place: the note
+        # explains why there is nothing to download. A skill in neither table
+        # gets no section at all.
         body.append("\n## What it produced\n")
-        body.append(
-            "Nothing of its own. This skill edits the files that describe the "
-            "feature model in place, so its output is the change itself rather "
-            "than a new artifact.\n")
+        body.append(f"{SKILL_NO_BUNDLE_NOTE[name]}\n")
 
     write_page(f"skills/{name}.md",
                {"layout": "default", "title": name,

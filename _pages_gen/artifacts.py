@@ -180,12 +180,12 @@ def skill_output_members(skill: str) -> List[Tuple[str, Path]]:
                     members.append((f".profiles/{name}", path))
         return members
 
-    if skill == "verify-analysis":
-        # The reviewed twins are this skill's product: one per automated
-        # mapping, re-derived after the cited evidence was re-checked.
-        for path in sorted(profiles.glob("*_user_review*.profile")):
-            members.append((f".profiles/{path.name}", path))
-        return members
+    # verify-analysis produces the reviewed twins -- one per automated mapping,
+    # re-derived after the cited evidence was re-checked -- but gets no archive
+    # of its own: every twin already ships inside feature_model.zip alongside
+    # the automated profile it corrects, which is the comparison a reader
+    # actually wants. So it falls through to the empty list below, as
+    # refresh-feature-model-infos does.
 
     # codebase-map and docs-map: the tools each one mapped.
     for tool in TOOLS:
@@ -202,25 +202,32 @@ def skill_output_members(skill: str) -> List[Tuple[str, Path]]:
 
 
 def register_skill_artifacts(artifacts: Artifacts) -> None:
-    """Register each skill's own files and build its two download archives.
+    """Register each skill's own files and build its download archives.
 
     ``SKILL.md`` carries YAML frontmatter, so Jekyll renders it to ``SKILL.html``
     and no raw ``.md`` is served -- the skill pages link GitHub raw for reading
     it directly. The archives are what make the whole folder downloadable, and
     the ``references/*.md`` files have no frontmatter so they are served as-is.
+
+    A skill with no ``references/`` gets no archive: it would hold ``SKILL.md``
+    alone, and the page already offers that file directly both ways. Deriving
+    that from the folder rather than naming the skills means one that later
+    gains a reference file starts getting an archive on its own.
     """
     skills_dir = ARTIFACTS / ".claude" / "skills"
     for skill in SKILL_ORDER:
         base = skills_dir / skill
         artifacts.register(base / "SKILL.md", f"skills/{skill}/SKILL.md")
 
-        for ref in sorted((base / "references").glob("*.md")):
+        refs = sorted((base / "references").glob("*.md"))
+        for ref in refs:
             artifacts.register(ref, f"skills/{skill}/references/{ref.name}")
 
-        artifacts.register(
-            build_bundle(f".claude/skills/{skill}",
-                         SKILL_BUNDLE.format(skill=skill), arc_root=skill),
-            f"bundles/{skill}-skill.zip")
+        if refs:
+            artifacts.register(
+                build_bundle(f".claude/skills/{skill}",
+                             SKILL_BUNDLE.format(skill=skill), arc_root=skill),
+                f"bundles/{skill}-skill.zip")
 
         members = skill_output_members(skill)
         if members:

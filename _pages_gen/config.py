@@ -220,10 +220,13 @@ SKILL_SUMMARY: Dict[str, str] = {
 }
 
 #: What each skill writes, in one line, for the "What it produced" section of
-#: its page. The files themselves are resolved from TOOL_META and MERGED rather
-#: than listed here, so adding a tool never means editing this table.
-#: ``refresh-feature-model-infos`` is absent on purpose: it edits files in place
-#: and produces nothing of its own to download.
+#: its page, above that section's download table. The files themselves are
+#: resolved from TOOL_META and MERGED rather than listed here, so adding a tool
+#: never means editing this table.
+#:
+#: A skill is absent when it ships no archive of its own; its page falls back to
+#: SKILL_NO_BUNDLE_NOTE instead. That is the case for
+#: ``refresh-feature-model-infos`` and ``verify-analysis``.
 SKILL_OUTPUT_BLURB: Dict[str, str] = {
     "extract-codebases-from-paper":
         "A tool inventory per paper, listing every tool the paper covers with "
@@ -234,11 +237,20 @@ SKILL_OUTPUT_BLURB: Dict[str, str] = {
     "docs-map":
         "The same three files as <code>codebase-map</code>, for the one tool "
         "mapped from its documentation rather than its source.",
-    "verify-analysis":
-        "The reviewed colour profiles — the reconciled twin of each automated "
-        "mapping, after the cited evidence was re-checked.",
     "merge-profiles":
         "The union profiles, each combining a chosen set of per-tool mappings.",
+}
+
+#: The "What it produced" text for a skill that ships no archive but still
+#: warrants the section, to say why there is nothing to download.
+#: ``verify-analysis`` is deliberately in neither this table nor
+#: SKILL_OUTPUT_BLURB, so its page omits the section entirely: its product is
+#: the reviewed profiles, and those are already presented with the model.
+SKILL_NO_BUNDLE_NOTE: Dict[str, str] = {
+    "refresh-feature-model-infos":
+        "Nothing of its own. This skill edits the files that describe the "
+        "feature model in place, so its output is the change itself rather "
+        "than a new artifact.",
 }
 
 #: The layout the skills expect of the repository they run in. They were run
