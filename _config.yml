@@ -1,0 +1,83 @@
+title: A Unified Feature Model for Microservice Identification and Refactoring
+description: >-
+  Artifact appendix: the unified feature model, per-tool mappings, evaluation
+  data, and the mapping tooling behind the paper.
+
+# GitHub Pages serves the REPOSITORY ROOT (Settings -> Pages -> Source: / on
+# main), so artifacts/ sits inside the Jekyll source and is published in place.
+# Nothing is ever copied out of artifacts/ -- it is the single source of truth.
+#
+# baseurl MUST match the repository name for a project site, otherwise every
+# absolute asset path 404s.
+baseurl: /UnifiedFeatureModelArtifacts
+url: https://socialsoftware.github.io
+
+markdown: kramdown
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+
+plugins:
+  - jekyll-relative-links
+
+# `include` is consulted BEFORE the dot-prefix rule (entry_filter.rb:32-40), so
+# this is what makes the .profiles/ directories publishable at all.
+#
+# CRITICAL: entries must be BARE BASENAMES. read_directories feeds the filter
+# Dir.entries(".") -- bare names (reader.rb:42) -- and included?
+# (entry_filter.rb:43-46) does NOT call relative_to_source, unlike excluded?
+# (:57). A path-qualified entry such as "artifacts/feature_model/.profiles"
+# therefore matches nothing and fails SILENTLY: a clean build with every
+# .profile missing.
+#
+# One basename entry covers the whole subtree: once the directory survives the
+# filter, Jekyll recurses into it and the *.profile children pass on their own
+# merits (no leading dot). Matching by basename means this also rescues the
+# four .profiles/ directories under evaluation/feature_models/ -- all of them
+# publishable research artifacts, so that is fine.
+#
+# `.claude` is here for the same reason: it publishes the six mapping skills.
+# Note what this does and does not give you. SKILL.md carries a YAML header, so
+# reader.rb:46 routes it to retrieve_pages and it is RENDERED to SKILL.html --
+# no raw SKILL.md is ever emitted. The skills page therefore links the rendered
+# page for reading and GitHub raw for downloading; a `download` link pointing at
+# artifacts/.claude/.../SKILL.md would 404. The references/*.md files have no
+# header and so are copied verbatim, downloadable as-is.
+#
+# `include` REPLACES its default ([".htaccess"]), hence the last entry.
+include:
+  - .profiles
+  - .claude
+  - .htaccess
+
+# `exclude` likewise REPLACES Jekyll's defaults rather than adding to them, so
+# the defaults that still matter have to be repeated here. Without `vendor`,
+# Jekyll scans the installed gems as site content and dies on its own
+# site_template/_posts fixtures.
+exclude:
+  # Jekyll defaults worth preserving.
+  - Gemfile
+  - Gemfile.lock
+  - vendor
+  - .bundle
+  - node_modules
+  # Repository files that are not site content. Without this, README.md would
+  # be rendered and served at /README.html.
+  - generate.py
+  - README.md
+  - CITATION.cff
+  - LICENSE
+  - LICENSE-DATA
+  # The build itself. Jekyll already skips names starting with "_", so this
+  # line is belt-and-braces -- but since `exclude` REPLACES the defaults, that
+  # underscore rule is otherwise the only thing standing between the generator
+  # source and the published site.
+  - _pages_gen
+  # NOTE: artifacts/evaluation/papers used to be excluded here. It is now
+  # published, as the output of extract-codebases-from-paper -- a skill whose
+  # product is exactly those inventories, so its page had nothing to show
+  # otherwise. The inventories' relative links to third-party paper PDFs do not
+  # resolve (those PDFs are not redistributable and are not in this tree); the
+  # skill page says so plainly. The Evaluation pages are unaffected: they read
+  # the inventories from artifacts/ via parse_paper_inventory, not from the
+  # built site.

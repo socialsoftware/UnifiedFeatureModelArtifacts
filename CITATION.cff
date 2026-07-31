@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "If you use these artifacts, please cite the paper below."
+title: "A Unified Feature Model for Microservice Identification and Refactoring — Artifacts"
+type: dataset
+authors:
+  - family-names: Almeida
+    given-names: Ana Margarida
+    orcid: "https://orcid.org/0000-0002-5946-3064"
+  - family-names: Rito Silva
+    given-names: António
+    orcid: "https://orcid.org/0000-0001-9840-457X"
+year: 2026
+license: "CC-BY-4.0"
+preferred-citation:
+  type: article
+  title: "A Unified Feature Model for Microservice Identification and Refactoring"
+  authors:
+    - family-names: Almeida
+      given-names: Ana Margarida
+      orcid: "https://orcid.org/0000-0002-5946-3064"
+    - family-names: Rito Silva
+      given-names: António
+      orcid: "https://orcid.org/0000-0001-9840-457X"
+  year: 2026

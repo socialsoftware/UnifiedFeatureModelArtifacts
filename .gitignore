@@ -1,0 +1,25 @@
+# Jekyll build output and cache. The Pages source is the repository root, so
+# these sit at the top level. GitHub builds the site itself, so the local
+# render must never be committed.
+_site/
+.jekyll-cache/
+.jekyll-metadata
+
+# NOTE: pages/ and bundles/ are deliberately NOT ignored. GitHub Pages builds
+# from the committed tree and never runs generate.py, so the generated markdown
+# and the generated zip downloads both have to be committed. Re-run
+# `python3 generate.py` and commit the result after any change under artifacts/,
+# or the published site goes stale.
+#
+# The zips are written deterministically (sorted members, fixed timestamps and
+# modes), so an unchanged artifacts/ folder rebuilds byte-identically and these
+# committed binaries do not show a spurious diff on every build.
+
+# Bundler
+.bundle/
+vendor/
+
+# Python bytecode and type-checker caches from the _pages_gen package.
+__pycache__/
+*.pyc
+.mypy_cache/

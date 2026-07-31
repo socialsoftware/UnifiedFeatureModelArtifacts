@@ -1,0 +1,539 @@
+/* ------------------------------------------------------------------ *
+ * A Unified Feature Model for Microservice Identification and
+ * Refactoring — artifact appendix.
+ * Self-contained: no external fonts, no CDN, no framework.
+ * ------------------------------------------------------------------ */
+
+:root {
+  --bg:        #ffffff;
+  --bg-soft:   #f6f8fa;
+  --bg-sunk:   #eef1f4;
+  --fg:        #1c2024;
+  --fg-muted:  #5b6570;
+  --border:    #d8dee4;
+  --accent:    #0a5ea8;
+  --accent-fg: #ffffff;
+  --shadow:    0 1px 2px rgba(0, 0, 0, .06), 0 4px 12px rgba(0, 0, 0, .05);
+  --radius:    8px;
+  --measure:   68rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:       #14171a;
+    --bg-soft:  #1c2024;
+    --bg-sunk:  #23282d;
+    --fg:       #e6e9ec;
+    --fg-muted: #a2acb6;
+    --border:   #333a41;
+    --accent:   #6cb2f5;
+    --accent-fg:#0d1013;
+    --shadow:   0 1px 2px rgba(0, 0, 0, .4), 0 4px 12px rgba(0, 0, 0, .3);
+  }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        "Helvetica Neue", Arial, sans-serif;
+}
+
+.wrap {
+  max-width: var(--measure);
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+}
+
+a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a:hover { text-decoration-thickness: 2px; }
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  background: var(--accent);
+  color: var(--accent-fg);
+  padding: .6rem 1rem;
+  z-index: 100;
+}
+.skip-link:focus { left: 1rem; top: 1rem; }
+
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ---------------------------------------------------------- header */
+
+.site-header {
+  background: var(--bg-soft);
+  border-bottom: 1px solid var(--border);
+  padding: 1.75rem 0 1.5rem;
+}
+
+.eyebrow {
+  margin: 0 0 .35rem;
+  font-size: .75rem;
+  font-weight: 600;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+
+.site-title {
+  margin: 0;
+  font-size: 1.5rem;
+  line-height: 1.25;
+  letter-spacing: -.01em;
+}
+.site-title a { color: inherit; text-decoration: none; }
+.site-title a:hover { color: var(--accent); }
+
+.byline {
+  margin: .6rem 0 0;
+  font-size: .9rem;
+  color: var(--fg-muted);
+}
+
+/* ------------------------------------------------------------- nav */
+
+.site-nav {
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.site-nav ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .25rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.site-nav a {
+  display: block;
+  padding: .8rem .85rem;
+  color: var(--fg-muted);
+  font-size: .92rem;
+  font-weight: 500;
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+}
+.site-nav a:hover { color: var(--fg); }
+.site-nav a[aria-current="page"] {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+.nav-toggle {
+  display: none;
+  width: 100%;
+  padding: .7rem 0;
+  background: none;
+  border: 0;
+  color: var(--fg);
+  font: inherit;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+
+@media (max-width: 44rem) {
+  .nav-toggle { display: block; }
+  .site-nav ul { display: none; padding-bottom: .5rem; }
+  .site-nav ul.is-open { display: block; }
+  .site-nav { position: static; }
+}
+
+/* The Evaluation sub-navigation: papers on the first row, that paper's tools
+   on the second. Rendered per page rather than toggled in JS, so every tool
+   keeps a citable URL. Both rows scroll sideways rather than wrapping, which
+   keeps the two levels visually distinct on a narrow screen. */
+
+.sub-nav {
+  margin: -0.5rem 0 2rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.sub-nav ul {
+  display: flex;
+  gap: .2rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.sub-nav a {
+  display: block;
+  padding: .5rem .7rem;
+  color: var(--fg-muted);
+  font-size: .88rem;
+  text-decoration: none;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+}
+.sub-nav a:hover { color: var(--fg); }
+.sub-nav a[aria-current="page"] {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+  font-weight: 600;
+}
+
+/* The papers row reads as the primary level. */
+.sub-nav-papers a { font-weight: 500; }
+
+/* The tools row is subordinate: indented, smaller, and set off by a rule. */
+.sub-nav-tools {
+  border-top: 1px solid var(--border);
+  padding-left: .6rem;
+}
+.sub-nav-tools a { font-size: .84rem; padding: .45rem .6rem; }
+
+/* ---------------------------------------------------------- content */
+
+main { padding: 2.25rem 1.25rem 3.5rem; }
+
+h1, h2, h3, h4, h5, h6 {
+  line-height: 1.25;
+  letter-spacing: -.01em;
+  margin: 2em 0 .6em;
+}
+main > h1:first-child { margin-top: 0; }
+
+h1 { font-size: 1.9rem; }
+h2 {
+  font-size: 1.4rem;
+  padding-bottom: .3rem;
+  border-bottom: 1px solid var(--border);
+}
+h3 { font-size: 1.13rem; }
+h4 { font-size: 1rem; }
+h5, h6 { font-size: .93rem; color: var(--fg-muted); }
+
+p, ul, ol { margin: 0 0 1rem; }
+li > ul, li > ol { margin-bottom: .25rem; }
+
+hr { height: 1px; margin: 2.5rem 0; background: var(--border); border: 0; }
+
+blockquote {
+  margin: 1.25rem 0;
+  padding: .1rem 1.1rem;
+  border-left: 3px solid var(--border);
+  color: var(--fg-muted);
+}
+
+code, kbd, samp, pre {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+               "Liberation Mono", monospace;
+}
+
+code {
+  background: var(--bg-sunk);
+  padding: .12em .38em;
+  border-radius: 4px;
+  font-size: .875em;
+  overflow-wrap: break-word;
+}
+
+pre {
+  background: var(--bg-sunk);
+  padding: .9rem 1rem;
+  border-radius: var(--radius);
+  overflow-x: auto;
+  font-size: .84rem;
+  line-height: 1.5;
+}
+pre code { background: none; padding: 0; font-size: inherit; }
+
+img { max-width: 100%; height: auto; }
+
+/* ---------------------------------------------------------- tables */
+
+/* Every table is wrapped by the generator in .table-scroll so that wide
+   tables (coverage matrix, 26-column meta-review) scroll inside their own
+   box and never make the page scroll sideways. */
+.table-scroll {
+  overflow-x: auto;
+  margin: 0 0 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+table { border-collapse: collapse; width: 100%; font-size: .88rem; }
+
+th, td {
+  padding: .5rem .7rem;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--border);
+}
+
+thead th {
+  background: var(--bg-soft);
+  font-weight: 600;
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+}
+thead tr:last-child th { border-bottom: 2px solid var(--border); }
+
+tbody tr:last-child td { border-bottom: 0; }
+tbody tr:hover { background: var(--bg-soft); }
+
+td code { font-size: .82em; white-space: nowrap; }
+
+/* Row-header column in the coverage matrix / meta-review. */
+th[scope="row"] {
+  background: var(--bg-soft);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* ---------------------------------------------------------- figures */
+
+figure.fm-image {
+  margin: 1.5rem 0;
+  padding: .9rem;
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+figure.fm-image figcaption {
+  margin-bottom: .7rem;
+  font-size: .88rem;
+  color: var(--fg-muted);
+}
+
+.fm-shots { display: grid; gap: .9rem; }
+
+/* The mapping exports are ~4917x288 (17:1). Shown at page width they are a
+   few pixels tall and unreadable, so the thumbnail is a cropped, clickable
+   teaser and the real viewing happens in the lightbox. */
+.fm-shot {
+  display: block;
+  width: 100%;
+  padding: 0;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: zoom-in;
+  overflow: hidden;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+}
+.fm-shot:hover { border-color: var(--accent); }
+
+.fm-shot img {
+  display: block;
+  width: 100%;
+  /* Keeps the strip legible-ish as a teaser instead of a 40px sliver. */
+  min-height: 74px;
+  max-height: 190px;
+  object-fit: cover;
+  object-position: left center;
+}
+
+/* A plain illustration rather than a zoomable mapping export: shown whole, at
+   its own size, with no lightbox button wrapped around it. */
+figure.fm-plain {
+  margin: 1.5rem 0;
+  text-align: center;
+}
+
+figure.fm-plain img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+}
+
+figure.fm-plain figcaption {
+  margin-top: .7rem;
+  font-size: .88rem;
+  color: var(--fg-muted);
+  text-align: left;
+}
+
+.fm-shot .fm-shot-label {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: .45rem .65rem;
+  border-top: 1px solid var(--border);
+  font-size: .8rem;
+  color: var(--fg-muted);
+}
+.fm-shot .fm-shot-label b { color: var(--fg); font-weight: 600; }
+
+/* --------------------------------------------------------- lightbox */
+
+.lb {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  /* Opaque: the page behind must not show through, or the strip and the
+     toolbar become hard to read against light page content. */
+  background: #0b0d0f;
+}
+.lb[hidden] { display: none; }
+
+.lb-bar {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  flex-wrap: wrap;
+  padding: .55rem .8rem;
+  background: rgba(0, 0, 0, .45);
+  color: #f2f4f6;
+  font-size: .85rem;
+}
+
+.lb-title { margin-right: auto; font-weight: 600; }
+
+.lb-bar button {
+  min-width: 2.3rem;
+  padding: .35rem .65rem;
+  background: rgba(255, 255, 255, .12);
+  color: #f2f4f6;
+  border: 1px solid rgba(255, 255, 255, .22);
+  border-radius: 5px;
+  font: inherit;
+  cursor: pointer;
+}
+.lb-bar button:hover { background: rgba(255, 255, 255, .22); }
+.lb-bar button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); }
+
+.lb-stage {
+  flex: 1;
+  overflow: auto;
+  cursor: grab;
+  overscroll-behavior: contain;
+}
+.lb-stage.is-panning { cursor: grabbing; }
+
+.lb-stage img {
+  display: block;
+  max-width: none;      /* native size; the stage scrolls */
+  transform-origin: 0 0;
+  image-rendering: -webkit-optimize-contrast;
+  /* Drag-to-pan guards. The native image drag would otherwise hijack the
+     gesture and cancel the pan (see lightbox.js). -webkit-user-drag is
+     non-standard, so the JS is what covers Firefox; touch-action keeps a
+     touch drag panning the strip instead of scrolling the page. */
+  -webkit-user-drag: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+}
+
+.lb-hint {
+  padding: .4rem .8rem;
+  background: rgba(0, 0, 0, .45);
+  color: #b9c1c9;
+  font-size: .76rem;
+  text-align: center;
+}
+
+@media (max-width: 34rem) {
+  .lb-hint { display: none; }
+}
+
+/* ------------------------------------------------------------ cards */
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15.5rem, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0 2rem;
+  padding: 0;
+  list-style: none;
+}
+
+/* Six skills wrap 3+3 rather than 4+2, which leaves the second row half
+   empty and the first row's cards too narrow for the summary text. */
+@media (min-width: 60rem) {
+  .skill-cards { grid-template-columns: repeat(3, 1fr); }
+}
+
+.cards li {
+  margin: 0;
+  padding: 1.05rem 1.15rem;
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.cards h3 { margin: 0 0 .35rem; font-size: 1.02rem; }
+.cards h3 a { text-decoration: none; }
+.cards h3 a:hover { text-decoration: underline; }
+.cards p { margin: 0; font-size: .88rem; color: var(--fg-muted); }
+.cards .card-files {
+  margin-top: .55rem;
+  font-size: .78rem;
+  color: var(--fg-muted);
+}
+
+/* ------------------------------------------------------------ notes */
+
+.note {
+  margin: 1.5rem 0;
+  padding: .9rem 1.1rem;
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius);
+  font-size: .92rem;
+}
+.note p:last-child { margin-bottom: 0; }
+.note strong { color: var(--fg); }
+
+/* Trailing per-page downloads block. */
+.downloads td:first-child { white-space: nowrap; }
+.downloads td:last-child  { white-space: nowrap; color: var(--fg-muted); }
+
+.meta-line {
+  margin: -.4rem 0 1.4rem;
+  font-size: .87rem;
+  color: var(--fg-muted);
+}
+
+/* The skills pipeline diagram. Plain text in a <pre>, so it degrades to
+   readable ASCII anywhere and needs no diagram library. */
+
+.pipeline {
+  font-size: .82rem;
+  line-height: 1.5;
+  overflow-x: auto;
+}
+
+/* ----------------------------------------------------------- footer */
+
+.site-footer {
+  padding: 1.5rem 0 2.5rem;
+  background: var(--bg-soft);
+  border-top: 1px solid var(--border);
+  font-size: .85rem;
+  color: var(--fg-muted);
+}
+.site-footer p { margin: 0 0 .4rem; }
+
+/* ------------------------------------------------------------ print */
+
+@media print {
+  .site-nav, .sub-nav, .lb, .skip-link, .nav-toggle { display: none !important; }
+  body { color: #000; background: #fff; }
+  .table-scroll { overflow: visible; border: 0; }
+  a { color: #000; }
+}
