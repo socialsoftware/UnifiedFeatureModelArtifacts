@@ -1,9 +1,8 @@
-"""The meta-review page: a short explanation and the two downloads."""
+"""The meta-review page: just the two downloads."""
 
 from __future__ import annotations
 
 import csv
-import html
 
 from ..artifacts import Artifacts
 from ..paths import BuildError
@@ -11,10 +10,9 @@ from ..render import downloads_block, write_page
 
 
 def render_meta_review(assets: Artifacts) -> int:
-    """Tab 3: a short explanation and the two downloads.
+    """Tab 3: the two downloads.
 
-    Returns the number of studies, read from the CSV so the count on the page
-    cannot drift from the data.
+    Returns the number of studies, read from the CSV, for the build report.
     """
     csv_path = assets.path("data/meta-review.csv")
     with csv_path.open(encoding="utf-8-sig", newline="") as fh:
@@ -33,17 +31,12 @@ def render_meta_review(assets: Artifacts) -> int:
         f"the dimensions of the feature model, recording the concepts that study "
         f"reports for each one. This is the bottom-up evidence the model was "
         f"generalised from.\n",
-        "<p>Studies reviewed: "
-        + ", ".join(f"<i>{html.escape(s)}</i>" for s in studies)
-        + ".</p>\n",
-        '<div class="note"><p>The table is wide and deeply nested — four header '
-        'rows — so it is published as data rather than rendered here. The CSV is '
-        'the source; the PDF is the same table laid out for reading.</p></div>\n',
+        "<p>The same table in two formats: CSV and PDF.</p>\n",
     ]
 
     entries = [("data/meta-review.csv", "The meta-review table (CSV)")]
     if "data/meta-review.pdf" in assets:
-        entries.append(("data/meta-review.pdf", "The same table, as a PDF"))
+        entries.append(("data/meta-review.pdf", "The meta-review table (PDF)"))
     body.append(downloads_block(assets, entries))
 
     write_page("meta-review.md",
