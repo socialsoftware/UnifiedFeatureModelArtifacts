@@ -68,8 +68,13 @@ exclude:
   - CITATION.cff
   - LICENSE
   - LICENSE-DATA
+  # The build itself. Jekyll already skips names starting with "_", so this
+  # line is belt-and-braces -- but since `exclude` REPLACES the defaults, that
+  # underscore rule is otherwise the only thing standing between the generator
+  # source and the published site.
+  - _pages_gen
   # Artifact subtrees that must not be published. papers/ holds the tool
   # inventories, whose links all point at third-party PDFs that are not
-  # redistributable here (which is why DROP_LINKS exists in generate.py); the
-  # Evaluation pages render the inventory tables themselves instead.
+  # redistributable here; the Evaluation pages lift the venue and availability
+  # columns and render them instead (see parse_paper_inventory).
   - artifacts/evaluation/papers

@@ -42,23 +42,50 @@ hand-written page (it has no banner, so it survives).
 
 **`artifacts/` is the single source of truth and is published in place.** The
 Pages source is the repository root, so `artifacts/` sits inside the Jekyll
-source tree. Nothing is ever copied out of it; `generate.py`'s `Artifacts`
-class only maps logical keys (`images/CARGO_claudeMapping.png`,
-`profiles/MEM.profile`) to real paths and turns them into URLs. Generated pages
-link and embed the artifact files — they never inline their content, which is
-why the pages stay short and the artifacts stay canonical.
+source tree. Nothing is ever copied out of it; the `Artifacts` class in
+`_pages_gen/artifacts.py` only maps logical keys
+(`images/CARGO_claudeMapping.png`, `profiles/MEM.profile`) to real paths and
+turns them into URLs. Generated pages link and embed the artifact files — they
+never inline their content, which is why the pages stay short and the artifacts
+stay canonical.
 
 Data flow: `artifacts/` → `generate.py` → `pages/*.md` (Markdown + inline HTML
 with YAML frontmatter) → Jekyll (`_layouts/default.html`, `_config.yml`) →
 `_site/` (gitignored locally; GitHub builds its own).
 
-### generate.py
+### The `_pages_gen/` package
 
-A single stdlib-only script, ~1450 lines, organised as: configuration tables →
-parsers → rendering helpers → one `render_*` function per page → `main()`.
+`generate.py` is a ~30-line entry point; the build lives in `_pages_gen/`
+beside it. **The leading underscore is load-bearing**: Jekyll skips entries
+whose name starts with `_` *before* it consults `exclude:`, so without it the
+generator source would be published as site content. (`- _pages_gen` is also
+listed under `exclude:` as a second layer.)
 
-Almost everything that varies lives in the module-level configuration tables at
-the top, so adding or renaming a tool is a config edit, not a code edit:
+Stdlib only, layered bottom-up — each module imports only from the ones above
+it in this list, so the graph stays acyclic:
+
+| Module | What it holds |
+| --- | --- |
+| `paths.py` | `REPO` / `ARTIFACTS` / `PAGES`, and `BuildError` |
+| `config.py` | every table that varies; no logic |
+| `util.py` | `read`, `human_size`, `png_size` |
+| `artifacts.py` | the key→file registry, and the one built artifact (the zip) |
+| `parse.py` | `.profile`, FeatureIDE XML, `SKILL.md`, paper inventories |
+| `render.py` | HTML/Markdown fragments, `sub_nav`, `write_page` |
+| `pages/` | one module per site section: `model`, `meta_review`, `skills`, `evaluation` |
+| `report.py` | the colour-count cross-check |
+| `postprocess.py` | `prune_pages`, `apply_baseurl` |
+| `cli.py` | `build()` and `main()` |
+
+The five Evaluation renderers share `pages/evaluation.py` deliberately: they
+share the `sub_nav` strip, the tool→paper lookup, and the "Proposed model
+extension" block.
+
+`render.py` receives an `Artifacts` instance as a parameter and only reads it;
+`artifacts.py` never imports `render.py`.
+
+Almost everything that varies lives in `_pages_gen/config.py`, so adding or
+renaming a tool is a config edit, not a code edit:
 
 - `TOOLS` / `TOOL_LABEL` — the seven mapped tools, in the paper's order
 - `TOOL_META` — per tool: which skill produced its mapping, its source paper, its repo URL

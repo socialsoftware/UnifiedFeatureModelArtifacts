@@ -53,14 +53,15 @@ artifacts/
     papers/                   Per-paper extractions behind the evaluated tools.
   meta-review/                Study selection and meta-review data.
   .claude/skills/             The mapping tooling (Claude skills).
-generate.py                   Regenerates pages/ from artifacts/.
+generate.py                   Regenerates pages/ from artifacts/. Entry point only.
+_pages_gen/                   The generator itself, as a stdlib-only package.
 _config.yml                   Jekyll configuration for the Pages site.
 _layouts/                     The page layout.
 assets/                       Stylesheet and the image lightbox. Website source
                               only — research artifacts live in artifacts/.
 pages/
   index.md                    Hand-written home page.
-  methodology.md, feature-model.md, coverage.md, meta-review.md, tools/
+  feature-model.md, initial-model.md, meta-review.md, skills.md, evaluation/
                               Generated — do not edit by hand.
 ```
 
