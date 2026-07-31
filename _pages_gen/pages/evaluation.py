@@ -1,9 +1,13 @@
-"""The five Evaluation pages.
+"""The Evaluation pages.
 
 They are kept in one module because they share their shape: the two-level
 ``sub_nav`` strip, the lookup from a tool to the paper it came from, and the
 "Proposed model extension" section that both the per-tool and the union pages
 render. Splitting them across files would hide that.
+
+There is no ``/evaluation/`` landing page: it only restated what ``sub_nav``
+already links, so the section's top-nav entry lives on the Mono2Micro tool page
+instead (see ``NAV_TOOL`` below).
 """
 
 from __future__ import annotations
@@ -15,69 +19,15 @@ from ..artifacts import Artifacts
 from ..config import (EXCLUDED_TOOLS, MERGED, PAPERS, TOOLS, TOOL_LABEL,
                       TOOL_META)
 from ..parse import parse_paper_inventory
-from ..render import (collect_images, colour_legend, downloads_block, figure,
-                      mapping_figures, profile_downloads, sub_nav, table,
-                      tool_images, write_page)
+from ..render import (collect_images, downloads_block, figure, mapping_figures,
+                      profile_downloads, sub_nav, table, tool_images,
+                      write_page)
 
-
-def render_evaluation_index(assets: Artifacts) -> None:
-    """Tab 5 landing page: what the evaluation is, and how to read it."""
-    body = [
-        "# Evaluation\n",
-        "Each tool below was mapped onto the feature model, and every mapping "
-        "here is the output of the "
-        f'<a href="{{{{BASE}}}}/skills/">mapping skills</a> — not a hand-made '
-        "assessment. The tools are grouped by the paper they were drawn from.\n",
-
-        "\n## What each tool page shows\n",
-        "<dl class=\"provenance\">"
-        "<dt>Automated mapping</dt>"
-        "<dd>What <code>codebase-map</code> or <code>docs-map</code> produced "
-        "from the tool's own code or documentation, unedited.</dd>"
-        "<dt>Revised mapping</dt>"
-        "<dd>The same mapping after the authors re-checked the cited evidence "
-        "and corrected it. Both are published so the corrections are visible.</dd>"
-        "<dt>Proposed model extension</dt>"
-        "<dd>Where a tool had a feature the model lacked, that feature was added "
-        "to a copy of the model. These are the authors' proposals, <b>not</b> "
-        "skill output, and only three tools produced one.</dd>"
-        "</dl>\n",
-
-        "\n## Colour legend\n",
-        colour_legend(),
-
-        "\n## Tools\n",
-    ]
-
-    rows = []
-    for paper in PAPERS:
-        for tool in TOOLS:
-            if TOOL_META[tool]["source"] != paper["key"]:
-                continue
-            href = ("{{BASE}}/evaluation/" + paper["slug"] + "/"
-                    + tool.lower() + "/")
-            rows.append((
-                f'<a href="{href}"><b>{html.escape(TOOL_LABEL[tool])}</b></a>',
-                html.escape(paper["label"]),
-                f'<code>{TOOL_META[tool]["skill"]}</code>',
-            ))
-    body.append(table(["Tool", "Source paper", "Mapped with"], rows))
-
-    if EXCLUDED_TOOLS:
-        body.append("\n## Tools that could not be mapped\n")
-        body.append(
-            "These appear in the source papers but have no public codebase or "
-            "documentation to map against.\n")
-        body.append(table(
-            ["Tool", "Source paper", "Reason"],
-            [(html.escape(n), html.escape(s), html.escape(r))
-             for n, s, r in EXCLUDED_TOOLS]))
-
-    write_page("evaluation/index.md",
-               {"layout": "default", "title": "Evaluation",
-                "nav_title": "Evaluation", "nav_order": 6,
-                "permalink": "/evaluation/"},
-               sub_nav() + "\n".join(body))
+#: The tool page that carries the section's top-nav entry, since there is no
+#: ``/evaluation/`` index to carry it. Mono2Micro is the tool the initial model
+#: was derived from, so it is the section's natural front door.
+NAV_TOOL = "mono2micro"
+NAV_ORDER = 6
 
 
 def render_paper_page(paper: Dict[str, str], assets: Artifacts) -> None:
@@ -175,9 +125,16 @@ def render_eval_tool_page(tool: str, assets: Artifacts) -> None:
                 [(extended_xml, "The extended feature model (FeatureIDE XML)")],
                 heading=""))
 
-    write_page(f"evaluation/{paper['slug']}/{tool.lower()}.md",
-               {"layout": "default", "title": label,
-                "permalink": f"/evaluation/{paper['slug']}/{tool.lower()}/"},
+    front: Dict[str, object] = {
+        "layout": "default", "title": label,
+        "permalink": f"/evaluation/{paper['slug']}/{tool.lower()}/",
+    }
+    # One tool page doubles as the Evaluation section's top-nav entry.
+    if tool == NAV_TOOL:
+        front["nav_title"] = "Evaluation"
+        front["nav_order"] = NAV_ORDER
+
+    write_page(f"evaluation/{paper['slug']}/{tool.lower()}.md", front,
                sub_nav(active_paper=key, active_tool=tool) + "\n".join(body))
 
 

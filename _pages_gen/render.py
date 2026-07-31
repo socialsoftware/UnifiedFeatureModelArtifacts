@@ -13,20 +13,13 @@ from __future__ import annotations
 
 import html
 from pathlib import Path
-from typing import Dict, Iterable, List, Optional, Sequence, Tuple
+from typing import Dict, Iterable, List, Sequence, Tuple
 
 from .artifacts import Artifacts
-from .config import (BANNER, COLOURS, COLOUR_MEANING, COLOUR_SHORT,
-                     IMAGE_PREFIX, PAPERS, TOOLS, TOOL_LABEL, TOOL_META)
+from .config import (BANNER, IMAGE_PREFIX, PAPERS, TOOLS, TOOL_LABEL,
+                     TOOL_META)
 from .paths import PAGES
 from .util import png_size
-
-
-def chip(colour: Optional[str]) -> str:
-    if not colour:
-        return '<span class="chip chip-none">not in model</span>'
-    cls = colour.lower()
-    return f'<span class="chip chip-{cls}">{html.escape(COLOUR_SHORT.get(colour, colour))}</span>'
 
 
 def write_page(rel: str, front: Dict[str, object], body: str) -> Path:
@@ -88,14 +81,6 @@ def figure(caption: str, shots: Sequence[Dict[str, str]]) -> str:
         )
     out += ["</div>", "</figure>"]
     return "\n".join(out)
-
-
-def colour_legend() -> str:
-    items = ['<ul class="legend">']
-    for colour in COLOURS:
-        items.append(f"<li>{chip(colour)}<span>{html.escape(COLOUR_MEANING[colour])}</span></li>")
-    items.append("</ul>")
-    return "\n".join(items)
 
 
 def downloads_block(assets: Artifacts, entries: Sequence[Tuple[str, str]],

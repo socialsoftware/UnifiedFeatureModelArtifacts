@@ -297,39 +297,6 @@ th[scope="row"] {
   white-space: nowrap;
 }
 
-/* --------------------------------------------------- colour chips */
-
-/* The mapping colours carry meaning, so never encode by colour alone:
-   every chip pairs its swatch with a text label. */
-.chip {
-  display: inline-flex;
-  align-items: center;
-  gap: .4em;
-  white-space: nowrap;
-  font-size: .82em;
-}
-
-.chip::before {
-  content: "";
-  width: .72em;
-  height: .72em;
-  flex: none;
-  border-radius: 2px;
-  border: 1px solid rgba(0, 0, 0, .28);
-}
-
-.chip-dark_green::before  { background: #1a7f37; }
-.chip-light_green::before { background: #7ee08a; }
-.chip-yellow::before      { background: #f2d861; }
-.chip-red::before         { background: #d1242f; }
-.chip-orange::before      { background: #f08a24; }
-.chip-magenta::before     { background: #d648c4; }
-.chip-none::before        { background: transparent; border-style: dashed; }
-
-.legend { display: grid; gap: .5rem; padding-left: 0; list-style: none; }
-.legend li { display: flex; gap: .6rem; align-items: baseline; }
-.legend .chip { flex: none; min-width: 9.5em; }
-
 /* ---------------------------------------------------------- figures */
 
 figure.fm-image {
@@ -513,21 +480,6 @@ figure.fm-image figcaption {
   margin: -.4rem 0 1.4rem;
   font-size: .87rem;
   color: var(--fg-muted);
-}
-
-/* The provenance key on the Evaluation index: what each kind of image on a
-   tool page actually is. A description list, since that is what it is. */
-
-.provenance { margin: 0 0 1.5rem; }
-.provenance dt {
-  font-weight: 600;
-  color: var(--fg);
-  margin-top: .8rem;
-}
-.provenance dd {
-  margin: .2rem 0 0;
-  color: var(--fg-muted);
-  font-size: .93rem;
 }
 
 /* The skills pipeline diagram. Plain text in a <pre>, so it degrades to

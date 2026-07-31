@@ -56,7 +56,7 @@ To address this gap, this paper proposes a feature model for variant-rich micros
     <p class="card-files">Downloads: each <code>SKILL.md</code></p>
   </li>
   <li>
-    <h3><a href="{{ '/evaluation/' | relative_url }}">Evaluation</a></h3>
+    <h3><a href="{{ '/evaluation/all-tools/' | relative_url }}">Evaluation</a></h3>
     <p>Seven tools, grouped by the paper they came from, each with its automated
     and revised mappings. Also the merged mappings showing what the tools cover
     together.</p>
